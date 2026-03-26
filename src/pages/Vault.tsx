@@ -150,20 +150,14 @@ export default function Vault() {
           </div>
         </div>
 
-        {/* Usage bar */}
+        {/* Usage info */}
         {usage && (
           <div className="bento-card p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2">
               <HardDrive className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm text-foreground font-medium">Armazenamento</span>
+              <span className="text-xs text-muted-foreground ml-auto">{getLimitMessage("vault")}</span>
             </div>
-            <div className="w-full bg-accent rounded-full h-2">
-              <div
-                className="bg-info h-2 rounded-full transition-all"
-                style={{ width: `${Math.min((usage.vaultSizeMB / (PLAN_LIMITS_VAULT_MAP[usage as any] || 100)) * 100, 100)}%` }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">{getLimitMessage("vault")}</p>
           </div>
         )}
 
