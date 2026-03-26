@@ -209,6 +209,3 @@ export default function Vault() {
     </AppLayout>
   );
 }
-
-// Simple helper — not importing PLAN_LIMITS to avoid circular dep issue in the bar width calc
-const PLAN_LIMITS_VAULT_MAP: any = {};
