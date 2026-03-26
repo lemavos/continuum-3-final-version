@@ -12,6 +12,8 @@ import Notes from "./pages/Notes";
 import NoteEditor from "./pages/NoteEditor";
 import Entities from "./pages/Entities";
 import EntityDetail from "./pages/EntityDetail";
+import Vault from "./pages/Vault";
+import Subscription from "./pages/Subscription";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -53,6 +55,8 @@ const AppRoutes = () => (
     <Route path="/notes/:id" element={<ProtectedRoute><NoteEditor /></ProtectedRoute>} />
     <Route path="/entities" element={<ProtectedRoute><Entities /></ProtectedRoute>} />
     <Route path="/entities/:id" element={<ProtectedRoute><EntityDetail /></ProtectedRoute>} />
+    <Route path="/vault" element={<ProtectedRoute><Vault /></ProtectedRoute>} />
+    <Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
