@@ -12,7 +12,6 @@ import {
   Download,
   Loader2,
   HardDrive,
-  AlertTriangle,
 } from "lucide-react";
 import type { VaultFile } from "@/types";
 
