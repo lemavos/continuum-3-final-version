@@ -8,8 +8,9 @@ import {
   Network,
   Search,
   LogOut,
-  Settings,
   User,
+  HardDrive,
+  CreditCard,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -17,6 +18,8 @@ const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/notes", icon: StickyNote, label: "Notas" },
   { to: "/entities", icon: Network, label: "Entidades" },
+  { to: "/vault", icon: HardDrive, label: "Vault" },
+  { to: "/subscription", icon: CreditCard, label: "Assinatura" },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {

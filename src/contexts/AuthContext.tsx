@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { authApi } from "@/lib/api";
+import type { Plan } from "@/types";
 
 interface User {
   id: string;
   username: string;
   email: string;
-  plan: string;
+  plan: Plan;
   emailVerified: boolean;
 }
 
@@ -16,6 +17,7 @@ interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -71,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, setTokens }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, setTokens, refreshUser: fetchUser }}>
       {children}
     </AuthContext.Provider>
   );
