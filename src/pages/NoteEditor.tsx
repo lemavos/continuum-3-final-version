@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AppLayout from "@/components/AppLayout";
 import { notesApi } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Eye, Edit3, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface NoteData {
   id: string;
@@ -27,6 +29,10 @@ export default function NoteEditor() {
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [preview, setPreview] = useState(false);
+  const [autoSaved, setAutoSaved] = useState(false);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSaved = useRef({ title: "", content: "" });
 
   useEffect(() => {
     if (!id) return;
@@ -34,17 +40,52 @@ export default function NoteEditor() {
       setNote(data);
       setTitle(data.title);
       setContent(data.content || "");
+      lastSaved.current = { title: data.title, content: data.content || "" };
     }).catch(() => {
       toast({ title: "Nota não encontrada", variant: "destructive" });
       navigate("/notes");
     }).finally(() => setLoading(false));
   }, [id]);
 
-  const handleSave = async () => {
+  const doSave = useCallback(async (t: string, c: string) => {
+    if (!id) return;
+    if (t === lastSaved.current.title && c === lastSaved.current.content) return;
+    setSaving(true);
+    try {
+      await notesApi.update(id, { title: t, content: c });
+      lastSaved.current = { title: t, content: c };
+      setAutoSaved(true);
+      setTimeout(() => setAutoSaved(false), 2000);
+    } catch {
+      // silent fail for auto-save
+    } finally {
+      setSaving(false);
+    }
+  }, [id]);
+
+  // Debounced auto-save (1.5s)
+  const scheduleAutoSave = useCallback((t: string, c: string) => {
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => doSave(t, c), 1500);
+  }, [doSave]);
+
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    scheduleAutoSave(val, content);
+  };
+
+  const handleContentChange = (val: string) => {
+    setContent(val);
+    scheduleAutoSave(title, val);
+  };
+
+  const handleManualSave = async () => {
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     if (!id) return;
     setSaving(true);
     try {
       await notesApi.update(id, { title, content });
+      lastSaved.current = { title, content };
       toast({ title: "Nota salva!" });
     } catch {
       toast({ title: "Erro ao salvar", variant: "destructive" });
@@ -52,6 +93,13 @@ export default function NoteEditor() {
       setSaving(false);
     }
   };
+
+  // Cleanup timer
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -70,25 +118,53 @@ export default function NoteEditor() {
           <Button variant="ghost" size="sm" onClick={() => navigate("/notes")}>
             <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
           </Button>
-          <Button size="sm" onClick={handleSave} disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
-            Salvar
-          </Button>
+          <div className="flex items-center gap-2">
+            {autoSaved && (
+              <span className="text-xs text-success flex items-center gap-1">
+                <Check className="w-3 h-3" /> Salvo
+              </span>
+            )}
+            {saving && (
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin" /> Salvando...
+              </span>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPreview(!preview)}
+            >
+              {preview ? <Edit3 className="w-4 h-4 mr-1" /> : <Eye className="w-4 h-4 mr-1" />}
+              {preview ? "Editar" : "Preview"}
+            </Button>
+            <Button size="sm" onClick={handleManualSave} disabled={saving}>
+              <Save className="w-4 h-4 mr-1" />
+              Salvar
+            </Button>
+          </div>
         </div>
 
         <Input
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => handleTitleChange(e.target.value)}
           placeholder="Título da nota..."
           className="text-xl font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
         />
 
-        <Textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Comece a escrever..."
-          className="min-h-[60vh] border-0 px-0 focus-visible:ring-0 bg-transparent resize-none text-sm leading-relaxed"
-        />
+        {preview ? (
+          <div className="prose prose-sm dark:prose-invert max-w-none min-h-[60vh] text-foreground">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {content || "*Nenhum conteúdo ainda...*"}
+            </ReactMarkdown>
+          </div>
+        ) : (
+          <Textarea
+            value={content}
+            onChange={(e) => handleContentChange(e.target.value)}
+            placeholder="Comece a escrever em Markdown..."
+            className="min-h-[60vh] border-0 px-0 focus-visible:ring-0 bg-transparent resize-none text-sm leading-relaxed font-mono"
+          />
+        )}
 
         {note?.entityIds && note.entityIds.length > 0 && (
           <div className="flex gap-2 flex-wrap">
