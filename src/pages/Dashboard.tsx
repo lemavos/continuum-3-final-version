@@ -4,6 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
 import { BentoGrid, type BentoItem } from "@/components/ui/bento-grid";
 import { metricsApi, trackingApi } from "@/lib/api";
+import { usePlanGate } from "@/hooks/usePlanGate";
+import { Progress } from "@/components/ui/progress";
 import {
   StickyNote,
   Network,
@@ -12,6 +14,8 @@ import {
   TrendingUp,
   Calendar,
 } from "lucide-react";
+import type { Plan } from "@/types";
+import { PLAN_LIMITS } from "@/types";
 
 interface DashboardMetrics {
   totalNotes?: number;
@@ -27,6 +31,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [metrics, setMetrics] = useState<DashboardMetrics>({});
   const [todayEvents, setTodayEvents] = useState<any[]>([]);
+  const { usage } = usePlanGate();
+
+  const plan: Plan = (user?.plan as Plan) || "FREE";
+  const limits = PLAN_LIMITS[plan];
 
   useEffect(() => {
     metricsApi.dashboard().then((r) => setMetrics(r.data)).catch(() => {});
@@ -74,6 +82,23 @@ export default function Dashboard() {
     },
   ];
 
+  const usageBar = (current: number, max: number, label: string) => {
+    const isUnlimited = max === -1;
+    const pct = isUnlimited ? 0 : Math.min((current / max) * 100, 100);
+    const isNearLimit = !isUnlimited && pct >= 80;
+    return (
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">{label}</span>
+          <span className={isNearLimit ? "text-warning font-medium" : "text-muted-foreground"}>
+            {isUnlimited ? `${current} / ∞` : `${current} / ${max}`}
+          </span>
+        </div>
+        <Progress value={isUnlimited ? 100 : pct} className="h-1.5" />
+      </div>
+    );
+  };
+
   return (
     <AppLayout>
       <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -87,6 +112,27 @@ export default function Dashboard() {
         </div>
 
         <BentoGrid items={bentoItems} />
+
+        {/* Plan Usage */}
+        {usage && (
+          <div className="bento-card p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-foreground">Uso do Plano {plan}</h2>
+              <button
+                onClick={() => navigate("/subscription")}
+                className="text-xs text-info hover:underline"
+              >
+                Gerenciar plano →
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {usageBar(usage.notesCount, limits.maxNotes, "Notas")}
+              {usageBar(usage.entitiesCount, limits.maxEntities, "Entidades")}
+              {usageBar(usage.habitsCount, limits.maxHabits, "Hábitos")}
+              {usageBar(usage.vaultSizeMB, limits.maxVaultSizeMB, "Vault (MB)")}
+            </div>
+          </div>
+        )}
 
         {/* Quick stats row */}
         <div className="grid grid-cols-3 gap-3">

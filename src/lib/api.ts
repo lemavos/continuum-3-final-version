@@ -140,11 +140,16 @@ export const plansApi = {
 // Vault
 export const vaultApi = {
   list: () => api.get("/api/vault/files"),
-  upload: (file: File) => {
+  upload: (file: File, onProgress?: (pct: number) => void) => {
     const formData = new FormData();
     formData.append("file", file);
     return api.post("/api/vault/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress: (e) => {
+        if (onProgress && e.total) {
+          onProgress(Math.round((e.loaded * 100) / e.total));
+        }
+      },
     });
   },
   delete: (fileId: string) => api.delete(`/api/vault/files/${fileId}`),
