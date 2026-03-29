@@ -33,7 +33,8 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/api/auth/google";
+    const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    window.location.href = `${base}/api/auth/google`;
   };
 
   return (
