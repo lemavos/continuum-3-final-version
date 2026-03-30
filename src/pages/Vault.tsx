@@ -6,35 +6,13 @@ import UpgradeModal from "@/components/UpgradeModal";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Upload,
-  FileText,
-  Image as ImageIcon,
-  FileArchive,
-  FileCode,
-  File as FileGeneric,
-  Trash2,
-  Download,
-  Loader2,
-  HardDrive,
-} from "lucide-react";
+import { Upload, FileText, Image as ImageIcon, FileArchive, FileCode, File as FileGeneric, Trash2, Download, Loader2, HardDrive } from "lucide-react";
 import type { VaultFile } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { PLAN_LIMITS, type Plan } from "@/types";
 
 const MAX_FILE_SIZE_MB = 50;
-const ALLOWED_TYPES = [
-  "application/pdf",
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-  "text/plain",
-  "application/json",
-  "application/zip",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
+const ALLOWED_TYPES = ["application/pdf","image/png","image/jpeg","image/webp","image/gif","text/plain","application/json","application/zip","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
 function getFileIcon(contentType: string) {
   if (contentType.startsWith("image/")) return ImageIcon;
@@ -59,14 +37,9 @@ export default function Vault() {
 
   const fetchFiles = async () => {
     setLoading(true);
-    try {
-      const { data } = await vaultApi.list();
-      setFiles(Array.isArray(data) ? data : []);
-    } catch {
-      toast({ title: "Erro ao carregar arquivos", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
+    try { const { data } = await vaultApi.list(); setFiles(Array.isArray(data) ? data : []); }
+    catch { toast({ title: "Erro ao carregar arquivos", variant: "destructive" }); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { fetchFiles(); }, []);
@@ -74,62 +47,29 @@ export default function Vault() {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const fileSizeMB = file.size / (1024 * 1024);
-    if (fileSizeMB > MAX_FILE_SIZE_MB) {
-      toast({ title: `Arquivo muito grande (máx ${MAX_FILE_SIZE_MB}MB)`, variant: "destructive" });
-      return;
-    }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      toast({ title: "Tipo de arquivo não permitido", variant: "destructive" });
-      return;
-    }
-    if (!canUploadVault(fileSizeMB)) {
-      setUpgradeOpen(true);
-      return;
-    }
-
-    setUploading(true);
-    setUploadProgress(0);
+    if (fileSizeMB > MAX_FILE_SIZE_MB) { toast({ title: `Arquivo muito grande (máx ${MAX_FILE_SIZE_MB}MB)`, variant: "destructive" }); return; }
+    if (!ALLOWED_TYPES.includes(file.type)) { toast({ title: "Tipo de arquivo não permitido", variant: "destructive" }); return; }
+    if (!canUploadVault(fileSizeMB)) { setUpgradeOpen(true); return; }
+    setUploading(true); setUploadProgress(0);
     try {
       await vaultApi.upload(file, (pct) => setUploadProgress(pct));
       toast({ title: "Arquivo enviado!" });
       await Promise.all([fetchFiles(), refresh()]);
-    } catch (err: any) {
-      toast({
-        title: "Erro no upload",
-        description: err.response?.data?.message || "Tente novamente",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+    } catch (err: any) { toast({ title: "Erro no upload", description: err.response?.data?.message || "Tente novamente", variant: "destructive" }); }
+    finally { setUploading(false); setUploadProgress(0); if (fileInputRef.current) fileInputRef.current.value = ""; }
   };
 
   const handleDelete = async (fileId: string) => {
-    try {
-      await vaultApi.delete(fileId);
-      setFiles((prev) => prev.filter((f) => f.id !== fileId));
-      await refresh();
-    } catch {
-      toast({ title: "Erro ao deletar", variant: "destructive" });
-    }
+    try { await vaultApi.delete(fileId); setFiles((prev) => prev.filter((f) => f.id !== fileId)); await refresh(); }
+    catch { toast({ title: "Erro ao deletar", variant: "destructive" }); }
   };
 
   const handleDownload = async (file: VaultFile) => {
     try {
       const { data } = await vaultApi.download(file.id);
-      const url = URL.createObjectURL(data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = file.fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      toast({ title: "Erro ao baixar", variant: "destructive" });
-    }
+      const url = URL.createObjectURL(data); const a = document.createElement("a"); a.href = url; a.download = file.fileName; a.click(); URL.revokeObjectURL(url);
+    } catch { toast({ title: "Erro ao baixar", variant: "destructive" }); }
   };
 
   const formatSize = (bytes: number) => {
@@ -144,103 +84,67 @@ export default function Vault() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-5xl mx-auto space-y-4">
+      <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Vault</h1>
-            <p className="text-sm text-muted-foreground">
-              Armazenamento seguro de arquivos
-            </p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Vault</h1>
+            <p className="text-sm text-muted-foreground mt-1">Armazenamento seguro de arquivos</p>
           </div>
           <div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              onChange={handleUpload}
-            />
-            <Button
-              size="sm"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-            >
-              {uploading ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-1" />
-              ) : (
-                <Upload className="w-4 h-4 mr-1" />
-              )}
-              Upload
+            <input ref={fileInputRef} type="file" className="hidden" onChange={handleUpload} />
+            <Button size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Upload className="w-4 h-4 mr-1" />} Upload
             </Button>
           </div>
         </div>
 
-        {/* Upload progress */}
         {uploading && (
           <div className="bento-card p-4 space-y-2">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Enviando arquivo...</span>
               <span>{Math.round(uploadProgress)}%</span>
             </div>
-            <Progress value={uploadProgress} className="h-1.5" />
+            <Progress value={uploadProgress} className="h-1" />
           </div>
         )}
 
-        {/* Storage usage */}
         <div className="bento-card p-4 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-muted-foreground" />
+              <HardDrive className="w-4 h-4 text-primary" />
               <span className="text-sm text-foreground font-medium">Armazenamento</span>
             </div>
             <span className="text-xs text-muted-foreground">
-              {vaultMaxMB === -1
-                ? `${vaultUsedMB.toFixed(1)} MB usados`
-                : `${vaultUsedMB.toFixed(1)} / ${vaultMaxMB} MB`}
+              {vaultMaxMB === -1 ? `${vaultUsedMB.toFixed(1)} MB usados` : `${vaultUsedMB.toFixed(1)} / ${vaultMaxMB} MB`}
             </span>
           </div>
-          <Progress value={vaultMaxMB === -1 ? 0 : vaultPct} className="h-1.5" />
+          <Progress value={vaultMaxMB === -1 ? 0 : vaultPct} className="h-1" />
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-          </div>
+          <div className="flex justify-center py-16"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
         ) : files.length === 0 ? (
-          <div className="text-center py-12 space-y-2">
-            <HardDrive className="w-8 h-8 text-muted-foreground mx-auto" />
+          <div className="text-center py-16 space-y-2">
+            <HardDrive className="w-8 h-8 text-muted-foreground/30 mx-auto" />
             <p className="text-muted-foreground text-sm">Nenhum arquivo no Vault</p>
             <p className="text-xs text-muted-foreground">Faça upload para começar</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {files.map((file) => {
               const Icon = getFileIcon(file.contentType);
               return (
-                <div key={file.id} className="bento-card group p-4 flex items-center justify-between">
+                <div key={file.id} className="group flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:bg-accent border border-transparent hover:border-border/50">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="bento-icon-box shrink-0">
-                      <Icon className="w-4 h-4 text-muted-foreground" />
-                    </div>
+                    <div className="bento-icon-box shrink-0"><Icon className="w-4 h-4 text-primary" /></div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{file.fileName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatSize(file.size)} · {new Date(file.createdAt).toLocaleDateString("pt-BR")}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{formatSize(file.size)} · {new Date(file.createdAt).toLocaleDateString("pt-BR")}</p>
                     </div>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleDownload(file)}
-                      className="p-1.5 rounded hover:bg-accent transition-colors"
-                    >
-                      <Download className="w-4 h-4 text-foreground" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(file.id)}
-                      className="p-1.5 rounded hover:bg-destructive/10 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </button>
+                    <button onClick={() => handleDownload(file)} className="p-1.5 rounded hover:bg-accent transition-colors"><Download className="w-4 h-4 text-foreground" /></button>
+                    <button onClick={() => handleDelete(file.id)} className="p-1.5 rounded hover:bg-destructive/10 transition-colors"><Trash2 className="w-4 h-4 text-destructive" /></button>
                   </div>
                 </div>
               );
@@ -248,11 +152,7 @@ export default function Vault() {
           </div>
         )}
       </div>
-      <UpgradeModal
-        open={upgradeOpen}
-        onOpenChange={setUpgradeOpen}
-        reason="Você atingiu o limite de armazenamento do seu plano."
-      />
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} reason="Você atingiu o limite de armazenamento do seu plano." />
     </AppLayout>
   );
 }
