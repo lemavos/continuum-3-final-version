@@ -26,7 +26,8 @@ interface GraphEdge {
 
 interface GraphData {
   nodes: { id: string; label: string; type: string }[];
-  edges: { source: string; target: string }[];
+  edges?: { source: string; target: string }[];
+  links?: { source: string; target: string }[];
 }
 
 const TYPE_COLORS: Record<string, string> = {
