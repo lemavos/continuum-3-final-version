@@ -226,7 +226,7 @@ export const TiptapEditor = forwardRef<TiptapEditorHandle, TiptapEditorProps>(
       const currentJSON = JSON.stringify(editor.getJSON());
       const newJSON = JSON.stringify(content);
       if (currentJSON !== newJSON && typeof content === "object") {
-        editor.commands.setContent(content, false);
+        editor.commands.setContent(content);
       }
     }, [content, editor]);
 
