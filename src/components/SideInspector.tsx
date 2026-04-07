@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Calendar, Link2, Network, StickyNote, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -149,15 +149,13 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
   const displayEntity = resolvedEntity || entity;
   const config = ENTITY_TYPE_CONFIG[displayEntity.type] || ENTITY_TYPE_CONFIG.TOPIC;
   const isNote = displayEntity.type === "NOTE";
-  const notePreview = useMemo(() => {
-    if (!isNote) {
-      return "";
-    }
-
-    const note = displayEntity as InspectableNote;
-    const previewSource = note.description || tiptapContentToPlainText(note.content);
-    return previewSource ? truncateText(previewSource) : "Sem conteúdo disponível.";
-  }, [displayEntity, isNote]);
+  const notePreview = isNote
+    ? (() => {
+        const note = displayEntity as InspectableNote;
+        const previewSource = note.description || tiptapContentToPlainText(note.content);
+        return previewSource ? truncateText(previewSource) : "Sem conteúdo disponível.";
+      })()
+    : "";
 
   return (
     <AnimatePresence mode="wait">
