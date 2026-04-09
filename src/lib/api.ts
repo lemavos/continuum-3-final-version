@@ -153,6 +153,7 @@ export const notesApi = {
     return api.put(`/api/notes/${id}`, payload);
   },
   delete: (id: string) => api.delete(`/api/notes/${id}`),
+  getBacklinks: (id: string) => api.get(`/api/notes/${id}/backlinks`),
 };
 
 // Folders
@@ -177,8 +178,8 @@ export const entitiesApi = {
   getNotes: (id: string) => api.get(`/api/entities/${id}/notes`),
   getConnections: (id: string) => api.get(`/api/entities/${id}/connections`),
   getContext: (id: string) => api.get(`/api/entities/${id}/context`),
-  track: (entityId: string, data?: { date?: string; value?: number; decimalValue?: number; note?: string }) =>
-    api.post(`/api/entities/${entityId}/track`, buildTrackPayload(data)),
+  track: (entityId: string) =>
+    api.post(`/api/entities/${entityId}/track-habit`),
   untrack: (entityId: string, date: string) =>
     api.delete(`/api/entities/${entityId}/track`, { params: { date } }),
   stats: (entityId: string) => api.get(`/api/entities/${entityId}/stats`),

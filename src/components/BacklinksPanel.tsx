@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StickyNote, Link2, Unlink } from "lucide-react";
-import api from "@/lib/api";
+import { notesApi } from "@/lib/api";
 
 interface BacklinkItem {
   id: string;
@@ -26,8 +26,8 @@ export function BacklinksPanel({ noteId }: BacklinksPanelProps) {
   useEffect(() => {
     if (!noteId) return;
     setLoading(true);
-    api
-      .get(`/api/notes/${noteId}/backlinks`)
+    notesApi
+      .getBacklinks(noteId)
       .then((res) => {
         setData({
           linkedMentions: Array.isArray(res.data?.linkedMentions) ? res.data.linkedMentions : [],
