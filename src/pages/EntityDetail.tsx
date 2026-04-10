@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AppLayout from "@/components/AppLayout";
 import { entitiesApi } from "@/lib/api";
-import { useTranslations } from "@/hooks/useTranslations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2, Flame, CheckCircle, Edit, StickyNote, Network, Calendar, Tag } from "lucide-react";
@@ -18,7 +17,6 @@ export default function EntityDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslations();
   const [entity, setEntity] = useState<EntityData | null>(null);
   const [heatmap, setHeatmap] = useState<HeatmapData>({});
   const [stats, setStats] = useState<EntityStats | null>(null);
@@ -79,7 +77,7 @@ export default function EntityDetail() {
         );
       } catch {
         if (!cancelled) {
-          toast({ title: t("entity.notFound"), variant: "destructive" });
+          toast({ title: "Entity not found", variant: "destructive" });
           navigate("/entities");
         }
       } finally {
@@ -135,7 +133,7 @@ export default function EntityDetail() {
       setEntity(freshData);
       setStats(sRes.data);
       setHeatmap(freshHeatmap);
-      toast({ title: t("habit.registered") });
+      toast({ title: "Registered! 🔥" });
     } catch { 
       toast({ title: "Error", variant: "destructive" });
     }
@@ -180,7 +178,7 @@ export default function EntityDetail() {
     <AppLayout>
       <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
         <Button variant="ghost" size="sm" onClick={() => navigate("/entities")} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="w-4 h-4 mr-1" /> {t("entity.back")}
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
 
         <div className="space-y-3">
@@ -210,30 +208,30 @@ export default function EntityDetail() {
         {isHabit && (
           <>
             <Button onClick={handleTrack} disabled={!!trackedToday} className={trackedToday ? "bg-accent text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90 glow-primary"}>
-              <CheckCircle className="w-4 h-4 mr-1" /> {trackedToday ? t("habit.doneToday") : t("habit.track")}
+              <CheckCircle className="w-4 h-4 mr-1" /> {trackedToday ? "Done today ✓" : "Track today"}
             </Button>
 
             <div className="space-y-3">
-              <h2 className="text-sm font-medium text-foreground">{t("habit.last90Days")}</h2>
+              <h2 className="text-sm font-medium text-foreground">Last 90 days</h2>
               <div className="flex flex-wrap gap-1">
                 {days.map((day) => (
                   <div key={day} title={`${day}: ${heatmap[day] || 0}`} className={cn("w-3 h-3 rounded-sm transition-colors", getHeatmapColor(heatmap[day] || 0))} />
                 ))}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{t("habit.less")}</span>
+                <span>Less</span>
                 <div className="w-3 h-3 rounded-sm bg-accent" />
                 <div className="w-3 h-3 rounded-sm bg-primary/20" />
                 <div className="w-3 h-3 rounded-sm bg-primary/50" />
                 <div className="w-3 h-3 rounded-sm bg-primary" />
-                <span>{t("habit.more")}</span>
+                <span>More</span>
               </div>
             </div>
           </>
         )}
 
         <div className="bento-card p-4">
-              <h3 className="text-sm font-medium text-foreground mb-3">{t("entity.metadata")}</h3>
+              <h3 className="text-sm font-medium text-foreground mb-3">Entity Metadata</h3>
           <div className="grid grid-cols-1 gap-3 text-xs text-muted-foreground">
             <div className="rounded-md border border-border/50 bg-card/60 p-3">
               <div className="mb-1 inline-flex items-center gap-1.5">
@@ -260,7 +258,7 @@ export default function EntityDetail() {
         </div>
 
         <div className="bento-card p-4">
-              <h3 className="text-sm font-medium text-foreground mb-3">{t("entity.connectedNotes")}</h3>
+              <h3 className="text-sm font-medium text-foreground mb-3">Connected Notes</h3>
           <div className="space-y-2">
             {relatedNotes.length > 0 ? (
               relatedNotes.slice(0, 5).map((note) => (
@@ -279,13 +277,13 @@ export default function EntityDetail() {
                 </button>
               ))
             ) : (
-                  <p className="text-sm text-muted-foreground">{t("entity.noNotesYet")}</p>
+                  <p className="text-sm text-muted-foreground">No connected notes yet.</p>
             )}
           </div>
         </div>
 
         <div className="bento-card p-4">
-              <h3 className="text-sm font-medium text-foreground mb-3">{t("entity.connectedEntities")}</h3>
+              <h3 className="text-sm font-medium text-foreground mb-3">Connected Entities</h3>
           <div className="space-y-2">
             {relatedEntities.length > 0 ? (
               relatedEntities.slice(0, 5).map((ent) => (
@@ -302,7 +300,7 @@ export default function EntityDetail() {
                 </button>
               ))
             ) : (
-                  <p className="text-sm text-muted-foreground">{t("entity.noEntitiesYet")}</p>
+                  <p className="text-sm text-muted-foreground">No connected entities yet.</p>
             )}
           </div>
         </div>

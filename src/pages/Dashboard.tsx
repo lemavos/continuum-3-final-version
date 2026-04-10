@@ -72,8 +72,8 @@ export default function Dashboard() {
       onClick: () => navigate("/entities"),
     },
     {
-      title: "Streak Atual",
-      meta: `${metrics.currentStreak ?? 0} dias`,
+      title: "Current Streak",
+      meta: `${metrics.currentStreak ?? 0} days`,
       description: "Your continuous productivity streak",
       icon: <Flame className="w-4 h-4 text-warning" />,
       status: "In progress",

@@ -12,12 +12,12 @@ import { tiptapContentToPlainText } from "@/lib/tiptap-content";
 import type { Entity, EntityStats, Note } from "@/types";
 
 const ENTITY_TYPE_CONFIG: Record<string, { label: string; icon: string }> = {
-  NOTE: { label: "Nota", icon: "📝" },
-  HABIT: { label: "Hábito", icon: "🟢" },
-  PROJECT: { label: "Projeto", icon: "🔵" },
-  PERSON: { label: "Pessoa", icon: "🟡" },
-  TOPIC: { label: "Conceito", icon: "🟣" },
-  ORGANIZATION: { label: "Organização", icon: "🟠" },
+  NOTE: { label: "Note", icon: "📝" },
+  HABIT: { label: "Habit", icon: "🟢" },
+  PROJECT: { label: "Project", icon: "🔵" },
+  PERSON: { label: "Person", icon: "🟡" },
+  TOPIC: { label: "Topic", icon: "🟣" },
+  ORGANIZATION: { label: "Organization", icon: "🟠" },
 };
 
 interface RelatedNote {
@@ -160,7 +160,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
     ? (() => {
         const note = displayEntity as InspectableNote;
         const previewSource = note.description || tiptapContentToPlainText(note.content);
-        return previewSource ? truncateText(previewSource) : "Sem conteúdo disponível.";
+        return previewSource ? truncateText(previewSource) : "No content available.";
       })()
     : "";
 
@@ -328,7 +328,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                       {displayEntity.type === "HABIT" && stats && (
                         <Card>
                           <CardHeader className="pb-3">
-                            <CardTitle className="text-sm font-semibold">Métricas do hábito</CardTitle>
+                            <CardTitle className="text-sm font-semibold">Habit Metrics</CardTitle>
                           </CardHeader>
                           <CardContent className="grid grid-cols-3 gap-3 text-center text-xs text-muted-foreground">
                             <div>

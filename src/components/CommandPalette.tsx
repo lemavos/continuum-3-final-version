@@ -83,26 +83,26 @@ export function CommandPalette() {
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput
-        placeholder="Buscar notas, entidades ou criar..."
+        placeholder="Search notes, entities, or create..."
         value={query}
         onValueChange={setQuery}
       />
       <CommandList>
         <CommandEmpty>
-          {loading ? "Buscando..." : "Nenhum resultado encontrado."}
+          {loading ? "Searching..." : "No results found."}
         </CommandEmpty>
 
         {/* Quick actions */}
-        <CommandGroup heading="Ações">
+        <CommandGroup heading="Actions">
           <CommandItem onSelect={handleCreateNote}>
             <Plus className="mr-2 h-4 w-4" />
-            <span>Criar nova nota{query ? `: "${query}"` : ""}</span>
+            <span>Create new note{query ? `: "${query}"` : ""}</span>
           </CommandItem>
         </CommandGroup>
 
         {/* Results */}
         {results.length > 0 && (
-          <CommandGroup heading="Resultados">
+          <CommandGroup heading="Results">
             {results.map((r) => (
               <CommandItem
                 key={`${r.type}-${r.id}`}

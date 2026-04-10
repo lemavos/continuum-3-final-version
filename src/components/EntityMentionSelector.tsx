@@ -7,11 +7,11 @@ import type { Entity, EntityType } from '@/types';
 import { useEntityStore } from '@/contexts/EntityContext';
 
 const ENTITY_TYPE_CONFIG: Record<EntityType, { label: string; icon: string; hoverBg: string; hoverBorder: string }> = {
-  HABIT: { label: 'Hábito', icon: '🟢', hoverBg: 'rgba(16,185,129,0.08)', hoverBorder: 'rgba(16,185,129,0.3)' },
-  PROJECT: { label: 'Projeto', icon: '🔵', hoverBg: 'rgba(59,130,246,0.08)', hoverBorder: 'rgba(59,130,246,0.3)' },
-  PERSON: { label: 'Pessoa', icon: '🟡', hoverBg: 'rgba(245,158,11,0.08)', hoverBorder: 'rgba(245,158,11,0.3)' },
-  TOPIC: { label: 'Conceito', icon: '🟣', hoverBg: 'rgba(139,92,246,0.08)', hoverBorder: 'rgba(139,92,246,0.3)' },
-  ORGANIZATION: { label: 'Organização', icon: '🟠', hoverBg: 'rgba(249,115,22,0.08)', hoverBorder: 'rgba(249,115,22,0.3)' },
+  HABIT: { label: 'Habit', icon: '🟢', hoverBg: 'rgba(16,185,129,0.08)', hoverBorder: 'rgba(16,185,129,0.3)' },
+  PROJECT: { label: 'Project', icon: '🔵', hoverBg: 'rgba(59,130,246,0.08)', hoverBorder: 'rgba(59,130,246,0.3)' },
+  PERSON: { label: 'Person', icon: '🟡', hoverBg: 'rgba(245,158,11,0.08)', hoverBorder: 'rgba(245,158,11,0.3)' },
+  TOPIC: { label: 'Topic', icon: '🟣', hoverBg: 'rgba(139,92,246,0.08)', hoverBorder: 'rgba(139,92,246,0.3)' },
+  ORGANIZATION: { label: 'Organization', icon: '🟠', hoverBg: 'rgba(249,115,22,0.08)', hoverBorder: 'rgba(249,115,22,0.3)' },
 };
 
 const BADGE_COLORS: Record<EntityType, string> = {
