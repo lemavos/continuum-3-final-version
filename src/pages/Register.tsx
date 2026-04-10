@@ -24,7 +24,7 @@ export default function Register() {
       toast({ title: "Conta criada!", description: "Verifique seu email para ativar a conta." });
       navigate("/login");
     } catch (err: any) {
-      toast({ title: "Erro ao criar conta", description: err.response?.data?.message || "Tente novamente", variant: "destructive" });
+      toast({ title: "Error creating account", description: err.response?.data?.message || "Try again", variant: "destructive" });
     } finally { setLoading(false); }
   };
 
@@ -64,7 +64,7 @@ export default function Register() {
 
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary" disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
-              Criar conta
+              Create Account
             </Button>
           </form>
         </div>

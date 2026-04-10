@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { BadgeCheck, CreditCard, Loader2, Moon, Sun } from "lucide-react";
 
-const formatLimitValue = (value: number, suffix = "") => (value === -1 ? "Ilimitado" : `${value}${suffix}`);
+const formatLimitValue = (value: number, suffix = "") => (value === -1 ? "Unlimited" : `${value}${suffix}`);
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -44,9 +44,9 @@ export default function Profile() {
   const limits = PLAN_LIMITS[currentPlan];
 
   const resources = useMemo(() => ([
-    { label: "Notas", current: usage?.notesCount ?? 0, max: limits.maxNotes },
-    { label: "Entidades", current: usage?.entitiesCount ?? 0, max: limits.maxEntities },
-    { label: "Hábitos", current: usage?.habitsCount ?? 0, max: limits.maxHabits },
+    { label: "Notes", current: usage?.notesCount ?? 0, max: limits.maxNotes },
+    { label: "Entities", current: usage?.entitiesCount ?? 0, max: limits.maxEntities },
+    { label: "Habits", current: usage?.habitsCount ?? 0, max: limits.maxHabits },
     { label: "Vault", current: usage?.vaultSizeMB ?? 0, max: limits.maxVaultSizeMB, suffix: " MB" },
   ]), [usage, limits]);
 
@@ -61,11 +61,11 @@ export default function Profile() {
       });
 
       await refreshUser();
-      toast({ title: "Perfil atualizado" });
+      toast({ title: "Profile updated" });
     } catch (err: any) {
       toast({
-        title: "Erro ao salvar perfil",
-        description: err.response?.data?.message || "Tente novamente",
+        title: "Error saving profile",
+        description: err.response?.data?.message || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -78,25 +78,25 @@ export default function Profile() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Perfil</h1>
-            <p className="text-sm text-muted-foreground mt-1">Gerencie sua conta, tema e limites do plano.</p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Profile</h1>
+            <p className="text-sm text-muted-foreground mt-1">Manage your account, theme, and plan limits.</p>
           </div>
 
           <Button variant="outline" className="border-border" onClick={() => navigate("/subscription")}>
-            <CreditCard className="w-4 h-4 mr-2" /> Gerenciar assinatura
+            <CreditCard className="w-4 h-4 mr-2" /> Manage Subscription
           </Button>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
           <section className="bento-card p-5 space-y-5">
             <div className="space-y-1">
-              <h2 className="text-lg font-medium text-foreground">Dados da conta</h2>
-              <p className="text-sm text-muted-foreground">Atualize suas informações principais.</p>
+              <h2 className="text-lg font-medium text-foreground">Account Data</h2>
+              <p className="text-sm text-muted-foreground">Update your main information.</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="profile-username">Nome de usuário</Label>
+                <Label htmlFor="profile-username">Username</Label>
                 <Input id="profile-username" value={username} onChange={(e) => setUsername(e.target.value)} className="bg-accent border-border" />
               </div>
 
@@ -108,25 +108,25 @@ export default function Profile() {
 
             <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
               <div className="rounded-lg border border-border bg-accent/50 p-3">
-                <p className="text-xs uppercase tracking-[0.18em]">Plano atual</p>
+                <p className="text-xs uppercase tracking-[0.18em]">Current Plan</p>
                 <p className="mt-2 text-foreground font-medium">{currentPlan}</p>
               </div>
               <div className="rounded-lg border border-border bg-accent/50 p-3">
-                <p className="text-xs uppercase tracking-[0.18em]">Membro desde</p>
-                <p className="mt-2 text-foreground font-medium">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "—"}</p>
+                <p className="text-xs uppercase tracking-[0.18em]">Member Since</p>
+                <p className="mt-2 text-foreground font-medium">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US") : "—"}</p>
               </div>
             </div>
 
             <Button onClick={handleSave} disabled={saving || !username.trim() || !email.trim()} className="bg-primary text-primary-foreground hover:bg-primary/90">
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-              Salvar alterações
+              Save Changes
             </Button>
           </section>
 
           <section className="bento-card p-5 space-y-5">
             <div className="space-y-1">
-              <h2 className="text-lg font-medium text-foreground">Preferências</h2>
-              <p className="text-sm text-muted-foreground">Escolha o tema da interface.</p>
+              <h2 className="text-lg font-medium text-foreground">Preferences</h2>
+              <p className="text-sm text-muted-foreground">Choose the interface theme.</p>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/50 p-4 space-y-4">
@@ -167,10 +167,10 @@ export default function Profile() {
             <div className="rounded-lg border border-border bg-accent/50 p-4 space-y-2">
               <div className="flex items-center gap-2 text-foreground">
                 <BadgeCheck className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium">Status da conta</span>
+                <span className="text-sm font-medium">Account Status</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Email {user?.emailVerified ? "verificado" : "pendente de verificação"}
+                Email {user?.emailVerified ? "verified" : "pending verification"}
               </p>
             </div>
           </section>
@@ -179,10 +179,10 @@ export default function Profile() {
         <section className="bento-card p-5 space-y-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-medium text-foreground">Limites do plano</h2>
-              <p className="text-sm text-muted-foreground">Uso atual sincronizado com sua conta.</p>
+              <h2 className="text-lg font-medium text-foreground">Plan Limits</h2>
+              <p className="text-sm text-muted-foreground">Current usage synchronized with your account.</p>
             </div>
-            <span className="text-xs text-muted-foreground">Histórico: {formatLimitValue(limits.historyDays, " dias")}</span>
+            <span className="text-xs text-muted-foreground">History: {formatLimitValue(limits.historyDays, " days")}</span>
           </div>
 
           {usageLoading && !usage ? (

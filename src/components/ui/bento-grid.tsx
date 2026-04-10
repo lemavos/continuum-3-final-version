@@ -61,7 +61,7 @@ function BentoGrid({ items }: BentoGridProps) {
                 ))}
               </div>
               <span className="text-xs text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                {item.cta || "Abrir →"}
+                {item.cta || "Open →"}
               </span>
             </div>
           </div>

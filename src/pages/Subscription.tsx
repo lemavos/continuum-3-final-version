@@ -38,7 +38,7 @@ export default function Subscription() {
         window.location.href = data.url;
       }
     } catch (err: any) {
-      toast({ title: "Erro", description: err.response?.data?.message || "Tente novamente", variant: "destructive" });
+      toast({ title: "Error", description: err.response?.data?.message || "Try again", variant: "destructive" });
     } finally {
       setCheckoutLoading(null);
     }
@@ -46,7 +46,7 @@ export default function Subscription() {
 
   const handleCancel = async () => {
     try { await subscriptionApi.cancel(); toast({ title: "Assinatura cancelada" }); const { data } = await subscriptionApi.me(); setSub(data); }
-    catch { toast({ title: "Erro ao cancelar", variant: "destructive" }); }
+    catch { toast({ title: "Error canceling subscription", variant: "destructive" }); }
   };
 
   const currentPlan = ((sub?.effectivePlan || user?.plan) as Plan) || "FREE";
@@ -69,7 +69,7 @@ export default function Subscription() {
                 <div>
                   <p className="font-semibold text-foreground">Plano <span className="text-primary">{currentPlan}</span></p>
                   <p className="text-xs text-muted-foreground">
-                    Status: {sub.status} {sub.currentPeriodEnd && `· Renova em ${new Date(sub.currentPeriodEnd).toLocaleDateString("pt-BR")}`}
+                    Status: {sub.status} {sub.currentPeriodEnd && `· Renews ${new Date(sub.currentPeriodEnd).toLocaleDateString("en-US")}`}
                   </p>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export default function Subscription() {
               const meta = planMeta[plan];
               const Icon = meta.icon;
               const isCurrent = plan === currentPlan;
-              const prices: Record<Plan, string> = { FREE: "Grátis", PLUS: "R$ 19,90/mês", PRO: "R$ 39,90/mês", VISION: "R$ 79,90/mês", GOLD: "R$ 79,90/mês" };
+              const prices: Record<Plan, string> = { FREE: "Free", PLUS: "$19.90/month", PRO: "$39.90/month", VISION: "$79.90/month", GOLD: "$79.90/month" };
               return (
                 <div key={plan} className={cn("bento-card p-5 space-y-4", isCurrent && "border-primary/30")}>
                   <div className="flex items-center gap-2">

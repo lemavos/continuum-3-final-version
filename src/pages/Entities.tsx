@@ -43,7 +43,7 @@ export default function Entities() {
       const [eRes, tRes] = await Promise.all([entitiesApi.list(), trackingApi.today()]);
       setEntities(Array.isArray(eRes.data) ? eRes.data : []);
       setTodayEvents(Array.isArray(tRes.data) ? tRes.data : []);
-    } catch { toast({ title: "Erro ao carregar entidades", variant: "destructive" }); }
+    } catch { toast({ title: "Error loading entities", variant: "destructive" }); }
     finally { setLoading(false); }
   };
 
@@ -61,14 +61,14 @@ export default function Entities() {
       void refreshUsage();
     } catch (err: any) {
       if (err.response?.status === 403) { setCreateOpen(false); setUpgradeOpen(true); }
-      else toast({ title: "Erro", description: err.response?.data?.message || "Limite atingido?", variant: "destructive" });
+      else toast({ title: "Error", description: err.response?.data?.message || "Limit reached?", variant: "destructive" });
     } finally { setCreating(false); }
   };
 
   const handleTrack = async (entityId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try { await entitiesApi.track(entityId); await fetchData(); toast({ title: "Hábito registrado! 🔥" }); }
-    catch { toast({ title: "Erro ao registrar", variant: "destructive" }); }
+    catch { toast({ title: "Error registering", variant: "destructive" }); }
   };
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
@@ -80,7 +80,7 @@ export default function Entities() {
       applyUsageDelta({ entitiesCount: entity?.type === "HABIT" ? 0 : -1, habitsCount: entity?.type === "HABIT" ? -1 : 0 });
       void refreshUsage();
     }
-    catch { toast({ title: "Erro ao deletar", variant: "destructive" }); }
+    catch { toast({ title: "Error deleting", variant: "destructive" }); }
   };
 
   const isTrackedToday = (entityId: string) => todayEvents.some((e: any) => e.entityId === entityId);
@@ -106,17 +106,17 @@ export default function Entities() {
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="w-4 h-4 mr-1" /> Nova Entidade</Button>
+              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="w-4 h-4 mr-1" /> New Entity</Button>
             </DialogTrigger>
             <DialogContent className="bg-card border-border">
-              <DialogHeader><DialogTitle className="text-foreground">Criar Entidade</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle className="text-foreground">Create Entity</DialogTitle></DialogHeader>
               <div className="space-y-4 pt-2">
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground uppercase tracking-wider">Título</Label>
-                  <Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Nome da entidade" className="bg-accent border-border/50" />
+                  <Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Entity name" className="bg-accent border-border/50" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Tipo</Label>
+                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Type</Label>
                   <Select value={newType} onValueChange={setNewType}>
                     <SelectTrigger className="bg-accent border-border/50"><SelectValue /></SelectTrigger>
                     <SelectContent className="bg-popover border-border">
@@ -125,11 +125,11 @@ export default function Entities() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Descrição (opcional)</Label>
-                  <Input value={newDesc} onChange={(e) => setNewDesc(e.target.value)} placeholder="Descrição" className="bg-accent border-border/50" />
+                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Description (optional)</Label>
+                  <Input value={newDesc} onChange={(e) => setNewDesc(e.target.value)} placeholder="Description" className="bg-accent border-border/50" />
                 </div>
                 <Button onClick={handleCreate} className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={creating || !newTitle}>
-                  {creating ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null} Criar
+                  {creating ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null} Create
                 </Button>
               </div>
             </DialogContent>
@@ -177,7 +177,7 @@ export default function Entities() {
                     <div className="flex gap-1">
                       {entity.type === "HABIT" && (
                         <button onClick={(e) => handleTrack(entity.id, e)} className={cn("bento-tag flex items-center gap-1 transition-colors", tracked && "bg-primary/20 text-primary")}>
-                          <CheckCircle className="w-3 h-3" /> {tracked ? "Feito" : "Registrar"}
+                          <CheckCircle className="w-3 h-3" /> {tracked ? "Done" : "Track"}
                         </button>
                       )}
                       {entity.trackingDates && entity.trackingDates.length > 0 && (

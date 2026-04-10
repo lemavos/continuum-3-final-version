@@ -30,7 +30,7 @@ export default function Notes() {
       const [notesRes, foldersRes] = await Promise.all([notesApi.list(), foldersApi.list()]);
       setNotes(Array.isArray(notesRes.data) ? notesRes.data : []);
       setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : []);
-    } catch { toast({ title: "Erro ao carregar notas", variant: "destructive" }); }
+    } catch { toast({ title: "Error loading notes", variant: "destructive" }); }
     finally { setLoading(false); }
   };
 
@@ -39,20 +39,20 @@ export default function Notes() {
   const handleCreateNote = async () => {
     if (!canCreateNote) { setUpgradeOpen(true); return; }
     try {
-      const { data } = await notesApi.create("Nova Nota", "", selectedFolder || undefined);
+      const { data } = await notesApi.create("New Note", "", selectedFolder || undefined);
       applyUsageDelta({ notesCount: 1 });
       void refresh();
       navigate(`/notes/${data.id}`);
     } catch (err: any) {
       if (err.response?.status === 403) setUpgradeOpen(true);
-      else toast({ title: "Erro", description: err.response?.data?.message || "Limite atingido?", variant: "destructive" });
+      else toast({ title: "Error", description: err.response?.data?.message || "Limit reached?", variant: "destructive" });
     }
   };
 
   const handleDeleteNote = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try { await notesApi.delete(id); setNotes((prev) => prev.filter((n) => n.id !== id)); applyUsageDelta({ notesCount: -1 }); void refresh(); }
-    catch { toast({ title: "Erro ao deletar", variant: "destructive" }); }
+    catch { toast({ title: "Error deleting", variant: "destructive" }); }
   };
 
   const filtered = notes.filter((n) => {
@@ -72,7 +72,7 @@ export default function Notes() {
             {limitMsg && <p className="text-xs text-muted-foreground mt-1">{limitMsg}</p>}
           </div>
           <Button onClick={handleCreateNote} size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={!canCreateNote && canCreateNote !== undefined}>
-            <Plus className="w-4 h-4 mr-1" /> Nova Nota
+            <Plus className="w-4 h-4 mr-1" /> New Note
           </Button>
         </div>
 
@@ -126,7 +126,7 @@ export default function Notes() {
                   >
                     <div className="min-w-0">
                       <h3 className="text-sm font-medium text-foreground truncate">{note.title || "Sem título"}</h3>
-                      <p className="text-xs text-muted-foreground">{new Date(note.updatedAt).toLocaleDateString("pt-BR")}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(note.updatedAt).toLocaleDateString("en-US")}</p>
                     </div>
                     <button
                       onClick={(e) => handleDeleteNote(note.id, e)}

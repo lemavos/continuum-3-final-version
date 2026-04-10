@@ -47,7 +47,7 @@ export default function Dashboard() {
       meta: `${metrics.totalNotes ?? "—"} notas`,
       description: "Gerencie suas notas, ideias e journaling com busca inteligente",
       icon: <StickyNote className="w-4 h-4 text-primary" />,
-      status: metrics.notesThisWeek ? `+${metrics.notesThisWeek} esta semana` : "Journal",
+      status: metrics.notesThisWeek ? `+${metrics.notesThisWeek} this week` : "Journal",
       tags: ["Escrita", "Ideias"],
       colSpan: 2,
       hasPersistentHover: true,
@@ -56,7 +56,7 @@ export default function Dashboard() {
     {
       title: "Hábitos do Dia",
       meta: `${todayEvents.length} feitos`,
-      description: "Acompanhe seus hábitos diários e mantenha sua sequência",
+      description: "Track your daily habits and maintain your streak",
       icon: <CheckCircle className="w-4 h-4 text-primary" />,
       status: "Hoje",
       tags: ["Streaks", "Diário"],
@@ -74,7 +74,7 @@ export default function Dashboard() {
     {
       title: "Streak Atual",
       meta: `${metrics.currentStreak ?? 0} dias`,
-      description: "Sua sequência de produtividade contínua",
+      description: "Your continuous productivity streak",
       icon: <Flame className="w-4 h-4 text-warning" />,
       status: "Em andamento",
       tags: ["Foco"],

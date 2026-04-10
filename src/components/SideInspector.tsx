@@ -36,7 +36,7 @@ interface SideInspectorProps {
 const truncateText = (value: string, maxLength = 220) =>
   value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
 
-const formatDate = (value?: string) => (value ? new Date(value).toLocaleDateString("pt-BR") : "—");
+const formatDate = (value?: string) => (value ? new Date(value).toLocaleDateString("en-US") : "—");
 
 export const SideInspector = memo(function SideInspector({ isOpen, entity, onClose }: SideInspectorProps) {
   const navigate = useNavigate();
@@ -124,7 +124,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
         setResolvedFromApi(true);
       } catch {
         if (!cancelled) {
-          setError("Não foi possível carregar dados reais desta entidade agora.");
+          setError("Could not load this entity's data right now.");
         }
       } finally {
         if (!cancelled) {
@@ -187,7 +187,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                   <h2 className="truncate text-lg font-bold text-foreground">{displayEntity.title}</h2>
                   {!loading && resolvedFromApi && displayEntity.createdAt && (
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Criado em {formatDate(displayEntity.createdAt)}
+                      Created on {formatDate(displayEntity.createdAt)}
                     </p>
                   )}
                 </div>
@@ -236,14 +236,14 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                             <div className="flex items-center justify-between">
                               <span className="inline-flex items-center gap-1.5">
                                 <Link2 className="h-3.5 w-3.5" />
-                                Entidades mencionadas
+                                Mentioned Entities
                               </span>
                               <span>{(displayEntity as InspectableNote).entityIds?.length ?? 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="inline-flex items-center gap-1.5">
                                 <Calendar className="h-3.5 w-3.5" />
-                                Última atualização
+                                Last Update
                               </span>
                               <span>{formatDate((displayEntity as InspectableNote).updatedAt)}</span>
                             </div>
@@ -260,7 +260,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                         }}
                       >
                         <ArrowUpRight className="h-4 w-4" />
-                        Abrir nota
+                        Open Note
                       </Button>
                     </>
                   ) : (
@@ -304,13 +304,13 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                           {displayEntity.description ? (
                             <p className="text-sm leading-relaxed text-foreground">{displayEntity.description}</p>
                           ) : (
-                            <p className="text-sm text-muted-foreground">Sem descrição cadastrada.</p>
+                            <p className="text-sm text-muted-foreground">No description added.</p>
                           )}
                           <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
                             <div className="rounded-md border border-border/50 bg-card/60 p-3">
                               <div className="mb-1 inline-flex items-center gap-1.5">
                                 <StickyNote className="h-3.5 w-3.5" />
-                                Notas
+                                Notes
                               </div>
                               <div className="text-base font-semibold text-foreground">{relatedNotes.length}</div>
                             </div>
@@ -333,19 +333,19 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                           <CardContent className="grid grid-cols-3 gap-3 text-center text-xs text-muted-foreground">
                             <div>
                               <div className="text-lg font-semibold text-foreground">{stats.currentStreak}</div>
-                              <p>Sequência</p>
+                              <p>Streak</p>
                             </div>
                             <div>
                               <div className="text-lg font-semibold text-foreground">{stats.longestStreak}</div>
-                              <p>Máxima</p>
+                              <p>Longest</p>
                             </div>
                             <div>
                               <div className="text-lg font-semibold text-foreground">{Math.round(weeklyCompletionRate)}%</div>
-                              <p>Taxa semanal</p>
+                              <p>Weekly Rate</p>
                             </div>
                           </CardContent>
                           <CardContent className="pt-0 text-center text-xs text-muted-foreground">
-                            <span>Total registrado: </span>
+                            <span>Total tracked: </span>
                             <span className="font-medium text-foreground">{habitTotalCompletions}</span>
                           </CardContent>
                         </Card>
@@ -353,7 +353,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
 
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm font-semibold">Notas conectadas</CardTitle>
+                          <CardTitle className="text-sm font-semibold">Connected Notes</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                           {relatedNotes.length > 0 ? (
@@ -370,20 +370,20 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-sm text-foreground">{note.title}</p>
                                   <p className="text-xs text-muted-foreground">
-                                    Atualizada em {formatDate(note.updatedAt || note.createdAt)}
+                                    Updated {formatDate(note.updatedAt || note.createdAt)}
                                   </p>
                                 </div>
                               </button>
                             ))
                           ) : (
-                            <p className="text-sm text-muted-foreground">Nenhuma nota conectada ainda.</p>
+                            <p className="text-sm text-muted-foreground">No connected notes yet.</p>
                           )}
                         </CardContent>
                       </Card>
 
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm font-semibold">Entidades relacionadas</CardTitle>
+                          <CardTitle className="text-sm font-semibold">Related Entities</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                           {relatedEntities.length > 0 ? (
@@ -417,7 +417,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                         }}
                       >
                         <ArrowUpRight className="h-4 w-4" />
-                        Abrir entidade
+                        Open Entity
                       </Button>
                     </>
                   )}

@@ -28,8 +28,8 @@ export default function GoogleCallback() {
       })
       .catch((err) => {
         toast({
-          title: "Erro na autenticação Google",
-          description: err.response?.data?.message || "Tente novamente",
+          title: "Error authenticating with Google",
+          description: err.response?.data?.message || "Try again",
           variant: "destructive",
         });
         navigate("/login");

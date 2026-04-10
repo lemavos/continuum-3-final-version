@@ -20,7 +20,7 @@ export default function ForgotPassword() {
       await authApi.forgotPassword(email);
       setSent(true);
     } catch (err: any) {
-      toast({ title: "Erro", description: err.response?.data?.message || "Tente novamente", variant: "destructive" });
+      toast({ title: "Error", description: err.response?.data?.message || "Try again", variant: "destructive" });
     } finally { setLoading(false); }
   };
 
@@ -59,7 +59,7 @@ export default function ForgotPassword() {
         </div>
 
         <Link to="/login" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Voltar ao login
+          <ArrowLeft className="w-4 h-4" /> Back to Login
         </Link>
       </div>
     </div>

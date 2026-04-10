@@ -22,7 +22,7 @@ export default function Login() {
       await login(email, password);
       navigate("/");
     } catch (err: any) {
-      toast({ title: "Erro ao entrar", description: err.response?.data?.message || "Credenciais inválidas", variant: "destructive" });
+      toast({ title: "Error logging in", description: err.response?.data?.message || "Invalid credentials", variant: "destructive" });
     } finally { setLoading(false); }
   };
 
@@ -92,7 +92,7 @@ export default function Login() {
 
         <p className="text-center text-sm text-muted-foreground">
           Não tem uma conta?{" "}
-          <Link to="/register" className="text-primary font-medium hover:underline">Criar conta</Link>
+          <Link to="/register" className="text-primary font-medium hover:underline">Create Account</Link>
         </p>
       </div>
     </div>

@@ -548,11 +548,11 @@ export default function KnowledgeGraph() {
                     Nenhuma conexão detectada ainda
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Comece a criar notas e mencionar entidades com <span className="text-primary font-medium">@</span> para ver seu cérebro crescer.
+                    Start creating notes and mention entities with <span className="text-primary font-medium">@</span> to see your brain grow.
                   </p>
                 </div>
                 <Button variant="outline" size="sm" className="border-border/50" onClick={() => navigate("/notes")}>
-                  Criar primeira nota →
+                  Create first note →
                 </Button>
               </div>
             </div>
@@ -598,7 +598,7 @@ export default function KnowledgeGraph() {
                 </div>
               ))}
               <p className="text-[9px] text-muted-foreground pt-1 border-t border-border/50">
-                Clique para inspecionar · Duplo-clique para abrir
+                Click to inspect · Double-click to open
               </p>
             </div>
           )}
@@ -619,7 +619,7 @@ export default function KnowledgeGraph() {
                   else navigate(`/entities/${selectedNode.id}`);
                 }}
               >
-                Abrir →
+                Open →
               </Button>
             </div>
           )}

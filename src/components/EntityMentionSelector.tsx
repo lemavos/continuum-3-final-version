@@ -157,7 +157,7 @@ export const EntityMentionSelector = memo(function EntityMentionSelector({
               ? 'Digite para buscar'
               : `${filteredEntities.length} encontrada${filteredEntities.length !== 1 ? 's' : ''}`}
           </span>
-          <span className="hidden sm:inline">↑↓ navegar · Enter selecionar · Esc fechar</span>
+          <span className="hidden sm:inline">↑↓ navigate · Enter select · Esc close</span>
         </div>
       </motion.div>
     </AnimatePresence>

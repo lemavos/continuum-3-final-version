@@ -130,7 +130,7 @@ export default function NoteEditor() {
         if (error?.response?.status === 401) {
           toast({ title: "Sessão expirada", variant: "destructive" });
         } else {
-          toast({ title: "Erro ao salvar nota", variant: "destructive" });
+          toast({ title: "Error saving note", variant: "destructive" });
         }
       }
     },
@@ -194,7 +194,7 @@ export default function NoteEditor() {
               onClick={() => navigate("/notes")}
               className="text-muted-foreground hover:text-foreground"
             >
-              <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back
             </Button>
             <div className="flex items-center gap-2">
               {/* Save status */}
@@ -255,7 +255,7 @@ export default function NoteEditor() {
           <div className="px-4 py-1.5 border-t border-border/30 shrink-0 flex items-center justify-between text-[11px] text-muted-foreground">
             <span>
               {note?.updatedAt
-                ? `Última edição: ${new Date(note.updatedAt).toLocaleString("pt-BR")}`
+                ? `Last edit: ${new Date(note.updatedAt).toLocaleString("en-US")}`
                 : ""}
             </span>
             <span className="flex items-center gap-1">

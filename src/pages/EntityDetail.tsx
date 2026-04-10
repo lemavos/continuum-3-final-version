@@ -97,7 +97,7 @@ export default function EntityDetail() {
   const handleTrack = async () => {
     if (!id) return;
     try {
-      await entitiesApi.track(id, { date: new Date().toISOString().slice(0, 10) });
+      await entitiesApi.track(id);
       const [eRes, sRes, hRes] = await Promise.all([entitiesApi.get(id), entitiesApi.stats(id), entitiesApi.heatmap(id)]);
       setEntity(eRes.data);
       setStats(sRes.data);
@@ -186,12 +186,12 @@ export default function EntityDetail() {
                 ))}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>Menos</span>
+                <span>Less</span>
                 <div className="w-3 h-3 rounded-sm bg-accent" />
                 <div className="w-3 h-3 rounded-sm bg-primary/20" />
                 <div className="w-3 h-3 rounded-sm bg-primary/50" />
                 <div className="w-3 h-3 rounded-sm bg-primary" />
-                <span>Mais</span>
+                <span>More</span>
               </div>
             </div>
           </>

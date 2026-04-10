@@ -31,7 +31,7 @@ export default function Vault() {
       const { data } = await vaultApi.list();
       setFiles(Array.isArray(data) ? data : []);
     } catch {
-      toast({ title: "Erro ao carregar arquivos", variant: "destructive" });
+      toast({ title: "Error loading files", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,7 @@ export default function Vault() {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground truncate">{file.fileName}</p>
                     <p className="text-xs text-muted-foreground">
-                      {formatSize(file.size)} · {new Date(file.createdAt).toLocaleDateString("pt-BR")}
+                      {formatSize(file.size)} · {new Date(file.createdAt).toLocaleDateString("en-US")}
                     </p>
                   </div>
                 </div>
