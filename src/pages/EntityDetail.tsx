@@ -97,13 +97,23 @@ export default function EntityDetail() {
   const handleTrack = async () => {
     if (!id) return;
     try {
+      // Optimistically update heatmap for today
+      const today = new Date().toISOString().split("T")[0];
+      setHeatmap(prev => ({
+        ...prev,
+        [today]: (prev[today] || 0) + 1
+      }));
+
       await entitiesApi.track(id);
       const [eRes, sRes, hRes] = await Promise.all([entitiesApi.get(id), entitiesApi.stats(id), entitiesApi.heatmap(id)]);
       setEntity(eRes.data);
       setStats(sRes.data);
       setHeatmap(hRes.data && typeof hRes.data === "object" ? hRes.data : {});
       toast({ title: "Registered! 🔥" });
-    } catch { toast({ title: "Error", variant: "destructive" }); }
+    } catch { 
+      toast({ title: "Error", variant: "destructive" });
+      // Optionally, revert optimistic update on error by refetching
+    }
   };
 
   const handleSaveTitle = async () => {

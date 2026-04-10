@@ -67,7 +67,19 @@ export default function Entities() {
 
   const handleTrack = async (entityId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    try { await entitiesApi.track(entityId); await fetchData(); toast({ title: "Habit tracked! 🔥" }); }
+    try {
+      // Optimistically update the entity in local state
+      const today = new Date().toISOString().split("T")[0];
+      setEntities(prev => prev.map(ent => 
+        ent.id === entityId 
+          ? { ...ent, trackingDates: [...(ent.trackingDates || []), today] }
+          : ent
+      ));
+      
+      await entitiesApi.track(entityId);
+      await fetchData();
+      toast({ title: "Habit tracked! 🔥" });
+    }
     catch { toast({ title: "Error registering", variant: "destructive" }); }
   };
 
