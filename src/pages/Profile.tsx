@@ -41,9 +41,9 @@ export default function Profile() {
   const limits = PLAN_LIMITS[currentPlan];
 
   const resources = useMemo(() => ([
-    { label: "Notes", current: usage?.notesCount ?? 0, max: limits.maxNotes },
-    { label: "Entities", current: usage?.entitiesCount ?? 0, max: limits.maxEntities },
-    { label: "Habits", current: usage?.habitsCount ?? 0, max: limits.maxHabits },
+    { label: "Notes", current: usage?.notesCount ?? 0, max: limits.maxNotes, suffix: "" },
+    { label: "Entities", current: usage?.entitiesCount ?? 0, max: limits.maxEntities, suffix: "" },
+    { label: "Habits", current: usage?.habitsCount ?? 0, max: limits.maxHabits, suffix: "" },
   ]), [usage, limits]);
 
   const handleSave = async () => {
