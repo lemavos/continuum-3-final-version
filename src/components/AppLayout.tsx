@@ -27,7 +27,7 @@ const navItems = [
   { to: "/entities", icon: Network, label: "Entities" },
   { to: "/graph", icon: GitGraph, label: "Graph" },
   // { to: "/vault", icon: HardDrive, label: "Vault" },
-  { to: "/subscription", icon: CreditCard, label: "Subscription" },
+  // { to: "/subscription", icon: CreditCard, label: "Subscription" },
   { to: "/profile", icon: Settings, label: "Profile" },
 ];
 

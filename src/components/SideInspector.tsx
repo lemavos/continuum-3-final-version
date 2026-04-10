@@ -317,7 +317,7 @@ export const SideInspector = memo(function SideInspector({ isOpen, entity, onClo
                             <div className="rounded-md border border-border/50 bg-card/60 p-3">
                               <div className="mb-1 inline-flex items-center gap-1.5">
                                 <Network className="h-3.5 w-3.5" />
-                                Conexões
+                                Connections
                               </div>
                               <div className="text-base font-semibold text-foreground">{relatedEntities.length}</div>
                             </div>

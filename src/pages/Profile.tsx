@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { BadgeCheck, CreditCard, Loader2, Moon, Sun } from "lucide-react";
@@ -28,12 +27,9 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [language, setLanguage] = useState("en");
 
   useEffect(() => {
     setMounted(true);
-    const savedLang = localStorage.getItem("app_lang") || "en";
-    setLanguage(savedLang);
   }, []);
 
   useEffect(() => {
@@ -48,7 +44,6 @@ export default function Profile() {
     { label: "Notes", current: usage?.notesCount ?? 0, max: limits.maxNotes },
     { label: "Entities", current: usage?.entitiesCount ?? 0, max: limits.maxEntities },
     { label: "Habits", current: usage?.habitsCount ?? 0, max: limits.maxHabits },
-    { label: "Vault", current: usage?.vaultSizeMB ?? 0, max: limits.maxVaultSizeMB, suffix: " MB" },
   ]), [usage, limits]);
 
   const handleSave = async () => {
@@ -133,23 +128,6 @@ export default function Profile() {
             <div className="rounded-lg border border-border bg-accent/50 p-4 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">Language</p>
-                  <p className="text-xs text-muted-foreground">Choose your preferred language.</p>
-                </div>
-                <Select value={language} onValueChange={(value) => { setLanguage(value); localStorage.setItem("app_lang", value); }}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="es">Spanish</SelectItem>
-                    <SelectItem value="pt">Portuguese</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="space-y-1">
                   <p className="text-sm font-medium text-foreground">Dark mode</p>
                   <p className="text-xs text-muted-foreground">Toggle between light and dark visual.</p>
                 </div>
@@ -199,7 +177,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm font-medium text-foreground">{resource.label}</span>
                       <span className="text-xs text-muted-foreground">
-                        {unlimited ? "Ilimitado" : `${resource.current.toFixed(resource.suffix ? 1 : 0)} / ${resource.max}${resource.suffix ?? ""}`}
+                        {unlimited ? "Unlimited" : `${resource.current.toFixed(resource.suffix ? 1 : 0)} / ${resource.max}${resource.suffix ?? ""}`}
                       </span>
                     </div>
                     <Progress value={percent} className="h-1.5" />

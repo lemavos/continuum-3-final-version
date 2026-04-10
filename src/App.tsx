@@ -17,7 +17,7 @@ import Entities from "./pages/Entities";
 import EntityDetail from "./pages/EntityDetail";
 import KnowledgeGraph from "./pages/KnowledgeGraph";
 import Vault from "./pages/Vault";
-import Subscription from "./pages/Subscription";
+// import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
@@ -63,7 +63,7 @@ const AppRoutes = () => (
     <Route path="/entities/:id" element={<ProtectedRoute><EntityDetail /></ProtectedRoute>} />
     <Route path="/graph" element={<ProtectedRoute><KnowledgeGraph /></ProtectedRoute>} />
     <Route path="/vault" element={<ProtectedRoute><Vault /></ProtectedRoute>} />
-    <Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
+    {/* <Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute>} /> */}
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>

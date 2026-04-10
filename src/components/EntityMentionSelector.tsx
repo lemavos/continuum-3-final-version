@@ -98,7 +98,7 @@ export const EntityMentionSelector = memo(function EntityMentionSelector({
         <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50">
           <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           <input
-            placeholder="Buscar entidade..."
+            placeholder="Search for entity..."
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
@@ -144,7 +144,7 @@ export const EntityMentionSelector = memo(function EntityMentionSelector({
             ) : (
               <div className="flex flex-col items-center justify-center py-6 gap-1">
                 <Search className="w-4 h-4 text-muted-foreground/50" />
-                <p className="text-xs text-muted-foreground">Nenhuma entidade encontrada</p>
+                <p className="text-xs text-muted-foreground">No entities found</p>
               </div>
             )}
           </div>
