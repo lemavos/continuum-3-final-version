@@ -38,7 +38,7 @@ export default function Login() {
           <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">
             Continuum
           </h1>
-          <p className="text-muted-foreground text-sm">Entre na sua conta para continuar</p>
+          <p className="text-muted-foreground text-sm">Sign in to your account to continue</p>
         </div>
 
         <div className="bento-card p-6 space-y-6">
@@ -47,15 +47,15 @@ export default function Login() {
               <Label htmlFor="email" className="text-xs text-muted-foreground uppercase tracking-wider">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu@email.com" className="pl-10 bg-accent border-border/50" required />
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" className="pl-10 bg-accent border-border/50" required />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-xs text-muted-foreground uppercase tracking-wider">Senha</Label>
+                <Label htmlFor="password" className="text-xs text-muted-foreground uppercase tracking-wider">Password</Label>
                 <Link to="/forgot-password" className="text-xs text-primary/70 hover:text-primary transition-colors">
-                  Esqueceu?
+                  Forgot?
                 </Link>
               </div>
               <div className="relative">
@@ -66,7 +66,7 @@ export default function Login() {
 
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary" disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
-              Entrar
+              Sign in
             </Button>
           </form>
 
@@ -75,7 +75,7 @@ export default function Login() {
               <div className="w-full border-t border-border/50" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-card px-3 text-muted-foreground">ou</span>
+              <span className="bg-card px-3 text-muted-foreground">or</span>
             </div>
           </div>
 
@@ -91,7 +91,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
-          Não tem uma conta?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="text-primary font-medium hover:underline">Create Account</Link>
         </p>
       </div>

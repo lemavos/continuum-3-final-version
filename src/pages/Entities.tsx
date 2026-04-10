@@ -17,7 +17,7 @@ import type { EntityType } from "@/types";
 interface Entity { id: string; title: string; type: EntityType; description?: string; createdAt: string; trackingDates?: string[]; }
 
 const typeIcons: Record<string, any> = { PERSON: User, PROJECT: Briefcase, TOPIC: Hash, ORGANIZATION: Building, HABIT: Flame };
-const typeLabels: Record<string, string> = { PERSON: "Pessoa", PROJECT: "Projeto", TOPIC: "Tópico", ORGANIZATION: "Organização", HABIT: "Hábito" };
+const typeLabels: Record<string, string> = { PERSON: "Person", PROJECT: "Project", TOPIC: "Topic", ORGANIZATION: "Organization", HABIT: "Habit" };
 
 export default function Entities() {
   const [entities, setEntities] = useState<Entity[]>([]);
@@ -67,7 +67,7 @@ export default function Entities() {
 
   const handleTrack = async (entityId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    try { await entitiesApi.track(entityId); await fetchData(); toast({ title: "Hábito registrado! 🔥" }); }
+    try { await entitiesApi.track(entityId); await fetchData(); toast({ title: "Habit tracked! 🔥" }); }
     catch { toast({ title: "Error registering", variant: "destructive" }); }
   };
 
@@ -100,7 +100,7 @@ export default function Entities() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Entidades</h1>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Entities</h1>
             {entitiesLimit && <p className="text-xs text-muted-foreground mt-1">{entitiesLimit}</p>}
             {habitsLimit && <p className="text-xs text-muted-foreground mt-1">{habitsLimit}</p>}
           </div>
@@ -112,7 +112,7 @@ export default function Entities() {
               <DialogHeader><DialogTitle className="text-foreground">Create Entity</DialogTitle></DialogHeader>
               <div className="space-y-4 pt-2">
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Título</Label>
+                  <Label className="text-xs text-muted-foreground uppercase tracking-wider">Title</Label>
                   <Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Entity name" className="bg-accent border-border/50" />
                 </div>
                 <div className="space-y-2">
@@ -137,7 +137,7 @@ export default function Entities() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <button onClick={() => setSearchParams({})} className={cn("bento-tag", !typeFilter && "bg-primary/10 text-primary font-medium")}>Todas</button>
+          <button onClick={() => setSearchParams({})} className={cn("bento-tag", !typeFilter && "bg-primary/10 text-primary font-medium")}>All</button>
           {types.map((t) => {
             const Icon = typeIcons[t];
             return (
@@ -150,7 +150,7 @@ export default function Entities() {
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar entidades..." className="pl-9 bg-accent border-border/50" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search entities..." className="pl-9 bg-accent border-border/50" />
         </div>
 
         {loading ? (
@@ -158,7 +158,7 @@ export default function Entities() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 space-y-2">
             <Network className="w-8 h-8 text-muted-foreground/30 mx-auto" />
-            <p className="text-muted-foreground text-sm">Nenhuma entidade encontrada</p>
+            <p className="text-muted-foreground text-sm">No entities found</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -194,7 +194,7 @@ export default function Entities() {
           </div>
         )}
       </div>
-      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} reason={typeFilter === "HABIT" ? "Você atingiu o limite de hábitos do seu plano." : "Você atingiu o limite de entidades do seu plano."} />
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} reason={typeFilter === "HABIT" ? "You've reached the habits limit for your plan." : "You've reached the entities limit for your plan."} />
     </AppLayout>
   );
 }

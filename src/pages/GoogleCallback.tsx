@@ -14,7 +14,7 @@ export default function GoogleCallback() {
   useEffect(() => {
     const code = searchParams.get("code");
     if (!code) {
-      toast({ title: "Código OAuth não encontrado", variant: "destructive" });
+      toast({ title: "OAuth code not found", variant: "destructive" });
       navigate("/login");
       return;
     }
@@ -40,7 +40,7 @@ export default function GoogleCallback() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground mx-auto" />
-        <p className="text-sm text-muted-foreground">Autenticando com Google...</p>
+        <p className="text-sm text-muted-foreground">Authenticating with Google...</p>
       </div>
     </div>
   );

@@ -57,10 +57,10 @@ export default function Vault() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Vault</h1>
-            <p className="text-sm text-muted-foreground mt-1">Armazenamento seguro de arquivos (visualização apenas)</p>
+            <p className="text-sm text-muted-foreground mt-1">Secure file storage (view-only)</p>
           </div>
           <Button size="sm" disabled className="bg-muted text-muted-foreground cursor-not-allowed">
-            Upload (em desenvolvimento)
+            Upload (coming soon)
           </Button>
         </div>
 
@@ -68,10 +68,10 @@ export default function Vault() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <HardDrive className="w-4 h-4 text-primary" />
-              <span className="text-sm text-foreground font-medium">Armazenamento</span>
+              <span className="text-sm text-foreground font-medium">Storage</span>
             </div>
             <span className="text-xs text-muted-foreground">
-              {vaultMaxMB === -1 ? `${vaultUsedMB.toFixed(1)} MB usados` : `${vaultUsedMB.toFixed(1)} / ${vaultMaxMB} MB`}
+              {vaultMaxMB === -1 ? `${vaultUsedMB.toFixed(1)} MB used` : `${vaultUsedMB.toFixed(1)} / ${vaultMaxMB} MB`}
             </span>
           </div>
           <Progress value={vaultMaxMB === -1 ? 0 : vaultPct} className="h-1" />
@@ -84,8 +84,8 @@ export default function Vault() {
         ) : files.length === 0 ? (
           <div className="text-center py-16 space-y-2">
             <HardDrive className="w-8 h-8 text-muted-foreground/30 mx-auto" />
-            <p className="text-muted-foreground text-sm">Nenhum arquivo no Vault</p>
-            <p className="text-xs text-muted-foreground">Upload estará disponível em breve</p>
+            <p className="text-muted-foreground text-sm">No files in Vault</p>
+            <p className="text-xs text-muted-foreground">Upload will be available soon</p>
           </div>
         ) : (
           <div className="space-y-1">

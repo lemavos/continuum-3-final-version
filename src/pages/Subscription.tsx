@@ -45,20 +45,20 @@ export default function Subscription() {
   };
 
   const handleCancel = async () => {
-    try { await subscriptionApi.cancel(); toast({ title: "Assinatura cancelada" }); const { data } = await subscriptionApi.me(); setSub(data); }
+    try { await subscriptionApi.cancel(); toast({ title: "Subscription canceled" }); const { data } = await subscriptionApi.me(); setSub(data); }
     catch { toast({ title: "Error canceling subscription", variant: "destructive" }); }
   };
 
   const currentPlan = ((sub?.effectivePlan || user?.plan) as Plan) || "FREE";
   const allPlans: Plan[] = ["FREE", "PLUS", "PRO", "VISION"];
-  const formatLimit = (val: number, suffix = "") => val === -1 ? "Ilimitado" : `${val}${suffix}`;
+  const formatLimit = (val: number, suffix = "") => val === -1 ? "Unlimited" : `${val}${suffix}`;
 
   return (
     <AppLayout>
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-8">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Assinatura</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gerencie seu plano e limites</p>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Subscription</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage your plan and limits</p>
         </div>
 
         {sub && (
@@ -67,14 +67,14 @@ export default function Subscription() {
               <div className="flex items-center gap-3">
                 {(() => { const M = planMeta[currentPlan]; const I = M.icon; return <I className={cn("w-5 h-5", M.color)} />; })()}
                 <div>
-                  <p className="font-semibold text-foreground">Plano <span className="text-primary">{currentPlan}</span></p>
+                  <p className="font-semibold text-foreground">Plan <span className="text-primary">{currentPlan}</span></p>
                   <p className="text-xs text-muted-foreground">
                     Status: {sub.status} {sub.currentPeriodEnd && `· Renews ${new Date(sub.currentPeriodEnd).toLocaleDateString("en-US")}`}
                   </p>
                 </div>
               </div>
               {currentPlan !== "FREE" && (
-                <Button variant="outline" size="sm" onClick={handleCancel} className="border-border/50 text-muted-foreground hover:text-foreground">Cancelar</Button>
+                <Button variant="outline" size="sm" onClick={handleCancel} className="border-border/50 text-muted-foreground hover:text-foreground">Cancel</Button>
               )}
             </div>
           </div>
@@ -99,10 +99,10 @@ export default function Subscription() {
                   <p className="text-xl font-display font-bold text-foreground">{prices[plan]}</p>
                   <ul className="space-y-2 text-sm">
                     {[
-                      `${formatLimit(limits.maxEntities)} entidades`,
-                      `${formatLimit(limits.maxNotes)} notas`,
-                      `${formatLimit(limits.maxHabits)} hábitos`,
-                      `${formatLimit(limits.historyDays, " dias")} histórico`,
+                      `${formatLimit(limits.maxEntities)} entities`,
+                      `${formatLimit(limits.maxNotes)} notes`,
+                      `${formatLimit(limits.maxHabits)} habits`,
+                      `${formatLimit(limits.historyDays, " days")} history`,
                       `${formatLimit(limits.maxVaultSizeMB, "MB")} Vault`,
                     ].map((f) => (
                       <li key={f} className="flex items-center gap-2 text-muted-foreground">
@@ -111,12 +111,12 @@ export default function Subscription() {
                     ))}
                   </ul>
                   {isCurrent ? (
-                    <Button variant="secondary" className="w-full" size="sm" disabled>Plano Atual</Button>
+                    <Button variant="secondary" className="w-full" size="sm" disabled>Current Plan</Button>
                   ) : plan === "FREE" ? (
-                    <Button variant="outline" className="w-full border-border/50" size="sm" disabled>Plano Base</Button>
+                    <Button variant="outline" className="w-full border-border/50" size="sm" disabled>Free Plan</Button>
                   ) : (
                     <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" size="sm" onClick={() => handleCheckout(plan)} disabled={!!checkoutLoading}>
-                      {checkoutLoading === plan ? <Loader2 className="w-4 h-4 animate-spin" /> : "Assinar"}
+                      {checkoutLoading === plan ? <Loader2 className="w-4 h-4 animate-spin" /> : "Subscribe"}
                     </Button>
                   )}
                 </div>

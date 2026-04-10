@@ -29,7 +29,7 @@ export default function ForgotPassword() {
       <div className="w-full max-w-sm space-y-8 animate-fade-in">
         <div className="text-center space-y-3">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">Continuum</h1>
-          <p className="text-muted-foreground text-sm">Recuperar senha</p>
+          <p className="text-muted-foreground text-sm">Reset your password</p>
         </div>
 
         <div className="bento-card p-6">
@@ -37,8 +37,8 @@ export default function ForgotPassword() {
             <div className="text-center space-y-4 py-4">
               <CheckCircle className="w-12 h-12 text-primary mx-auto" />
               <div className="space-y-1">
-                <p className="font-medium text-foreground">Email enviado!</p>
-                <p className="text-sm text-muted-foreground">Verifique sua caixa de entrada para redefinir sua senha.</p>
+                <p className="font-medium text-foreground">Email sent!</p>
+                <p className="text-sm text-muted-foreground">Check your inbox to reset your password.</p>
               </div>
             </div>
           ) : (
@@ -52,7 +52,7 @@ export default function ForgotPassword() {
               </div>
               <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary" disabled={loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                Enviar link de recuperação
+                Send recovery link
               </Button>
             </form>
           )}

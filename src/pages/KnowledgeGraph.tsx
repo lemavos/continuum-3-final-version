@@ -34,12 +34,12 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 const TYPE_LABELS: Record<string, string> = {
-  NOTE: "Nota",
-  HABIT: "Hábito",
-  PERSON: "Pessoa",
-  PROJECT: "Projeto",
-  TOPIC: "Conceito",
-  ORGANIZATION: "Organização",
+  NOTE: "Note",
+  HABIT: "Habit",
+  PERSON: "Person",
+  PROJECT: "Project",
+  TOPIC: "Topic",
+  ORGANIZATION: "Organization",
 };
 
 const TYPE_RADIUS: Record<string, number> = {
@@ -486,7 +486,7 @@ export default function KnowledgeGraph() {
               Grafo de Conhecimento
             </h1>
             <p className="text-xs text-muted-foreground">
-              {graphStats.nodes} nós · {graphStats.edges} conexões
+              {graphStats.nodes} nodes · {graphStats.edges} connections
             </p>
           </div>
           <div className="flex items-center gap-1">

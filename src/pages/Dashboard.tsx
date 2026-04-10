@@ -43,31 +43,31 @@ export default function Dashboard() {
 
   const bentoItems: BentoItem[] = [
     {
-      title: "Notas",
-      meta: `${metrics.totalNotes ?? "—"} notas`,
-      description: "Gerencie suas notas, ideias e journaling com busca inteligente",
+      title: "Notes",
+      meta: `${metrics.totalNotes ?? "—"} notes`,
+      description: "Manage your notes, ideas and journaling with smart search",
       icon: <StickyNote className="w-4 h-4 text-primary" />,
       status: metrics.notesThisWeek ? `+${metrics.notesThisWeek} this week` : "Journal",
-      tags: ["Escrita", "Ideias"],
+      tags: ["Writing", "Ideas"],
       colSpan: 2,
       hasPersistentHover: true,
       onClick: () => navigate("/notes"),
     },
     {
-      title: "Hábitos do Dia",
-      meta: `${todayEvents.length} feitos`,
+      title: "Daily Habits",
+      meta: `${todayEvents.length} completed`,
       description: "Track your daily habits and maintain your streak",
       icon: <CheckCircle className="w-4 h-4 text-primary" />,
-      status: "Hoje",
-      tags: ["Streaks", "Diário"],
+      status: "Today",
+      tags: ["Streaks", "Daily"],
       onClick: () => navigate("/entities?type=HABIT"),
     },
     {
-      title: "Entidades",
+      title: "Entities",
       meta: `${metrics.totalEntities ?? "—"} total`,
-      description: "Pessoas, projetos, tópicos e organizações conectados",
+      description: "People, projects, topics and connected organizations",
       icon: <Network className="w-4 h-4 text-primary" />,
-      tags: ["Grafo", "Conexões"],
+      tags: ["Graph", "Connections"],
       colSpan: 2,
       onClick: () => navigate("/entities"),
     },
@@ -76,8 +76,8 @@ export default function Dashboard() {
       meta: `${metrics.currentStreak ?? 0} dias`,
       description: "Your continuous productivity streak",
       icon: <Flame className="w-4 h-4 text-warning" />,
-      status: "Em andamento",
-      tags: ["Foco"],
+      status: "In progress",
+      tags: ["Focus"],
       onClick: () => navigate("/entities?type=HABIT"),
     },
   ];
@@ -104,10 +104,10 @@ export default function Dashboard() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-8">
         <div className="space-y-1">
           <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
-            Olá, {user?.username || "Usuário"}
+            Hello, {user?.username || "User"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Aqui está o resumo da sua atividade
+            Here's a summary of your activity
           </p>
         </div>
 
@@ -118,16 +118,16 @@ export default function Dashboard() {
           <div className="bento-card p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-medium text-foreground">
-                Plano <span className="text-primary">{plan}</span>
+                Plan <span className="text-primary">{plan}</span>
               </h2>
               <button onClick={() => navigate("/subscription")} className="text-xs text-primary/70 hover:text-primary transition-colors">
-                Gerenciar →
+                Manage →
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {usageBar(usage.notesCount, limits.maxNotes, "Notas")}
-              {usageBar(usage.entitiesCount, limits.maxEntities, "Entidades")}
-              {usageBar(usage.habitsCount, limits.maxHabits, "Hábitos")}
+              {usageBar(usage.notesCount, limits.maxNotes, "Notes")}
+              {usageBar(usage.entitiesCount, limits.maxEntities, "Entities")}
+              {usageBar(usage.habitsCount, limits.maxHabits, "Habits")}
               {usageBar(usage.vaultSizeMB, limits.maxVaultSizeMB, "Vault (MB)")}
             </div>
           </div>
@@ -136,9 +136,9 @@ export default function Dashboard() {
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { icon: TrendingUp, value: metrics.totalNotes ?? 0, label: "Notas" },
-            { icon: Network, value: metrics.totalEntities ?? 0, label: "Entidades" },
-            { icon: Calendar, value: todayEvents.length, label: "Feitos hoje" },
+            { icon: TrendingUp, value: metrics.totalNotes ?? 0, label: "Notes" },
+            { icon: Network, value: metrics.totalEntities ?? 0, label: "Entities" },
+            { icon: Calendar, value: todayEvents.length, label: "Completed today" },
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="bento-card p-4 text-center space-y-2">
               <Icon className="w-5 h-5 text-primary mx-auto" />

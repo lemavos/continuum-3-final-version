@@ -34,10 +34,10 @@ export default function UpgradeModal({ open, onOpenChange, reason }: UpgradeModa
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground font-display text-xl">
             <Crown className="w-5 h-5 text-primary" />
-            Faça upgrade do seu plano
+            Upgrade your plan
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {reason || "Você atingiu o limite do seu plano atual. Faça upgrade para continuar."}
+            {reason || "You've reached your current plan limit. Upgrade to continue."}
           </DialogDescription>
         </DialogHeader>
 
@@ -70,7 +70,7 @@ export default function UpgradeModal({ open, onOpenChange, reason }: UpgradeModa
                   onClick={() => handleCheckout(plan.id)}
                   disabled={!!loadingPlan}
                 >
-                  {loadingPlan === plan.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Assinar"}
+                  {loadingPlan === plan.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Subscribe"}
                 </Button>
               </div>
             );

@@ -92,7 +92,7 @@ export default function NoteEditor() {
         if (cancelled) {
           return;
         }
-        toast({ title: "Nota não encontrada", variant: "destructive" });
+        toast({ title: "Note not found", variant: "destructive" });
         navigate("/notes");
       })
       .finally(() => {
@@ -162,7 +162,7 @@ export default function NoteEditor() {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     const json = editorRef.current?.getJSON() || currentJSON.current;
     await doSave(title, json);
-    toast({ title: "Nota salva!" });
+    toast({ title: "Note saved!" });
   };
 
   useEffect(() => {
@@ -228,7 +228,7 @@ export default function NoteEditor() {
                 disabled={saveStatus === "saving"}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                <Save className="w-4 h-4 mr-1" /> Salvar
+                <Save className="w-4 h-4 mr-1" /> Save
               </Button>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function NoteEditor() {
             <Input
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Título da nota..."
+              placeholder="Note title..."
               className="text-2xl font-display font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent text-foreground mb-4 h-auto"
             />
 

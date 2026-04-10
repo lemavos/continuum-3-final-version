@@ -21,7 +21,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(username, email, password);
-      toast({ title: "Conta criada!", description: "Verifique seu email para ativar a conta." });
+      toast({ title: "Account created!", description: "Check your email to activate your account." });
       navigate("/login");
     } catch (err: any) {
       toast({ title: "Error creating account", description: err.response?.data?.message || "Try again", variant: "destructive" });
@@ -33,13 +33,13 @@ export default function Register() {
       <div className="w-full max-w-sm space-y-8 animate-fade-in">
         <div className="text-center space-y-3">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">Continuum</h1>
-          <p className="text-muted-foreground text-sm">Crie sua conta e comece a organizar</p>
+          <p className="text-muted-foreground text-sm">Create your account and start organizing</p>
         </div>
 
         <div className="bento-card p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-xs text-muted-foreground uppercase tracking-wider">Usuário</Label>
+              <Label htmlFor="username" className="text-xs text-muted-foreground uppercase tracking-wider">Username</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="johndoe" className="pl-10 bg-accent border-border/50" required />
@@ -55,7 +55,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-xs text-muted-foreground uppercase tracking-wider">Senha</Label>
+              <Label htmlFor="password" className="text-xs text-muted-foreground uppercase tracking-wider">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="pl-10 bg-accent border-border/50" required minLength={8} />
@@ -70,8 +70,8 @@ export default function Register() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
-          Já tem uma conta?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">Entrar</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary font-medium hover:underline">Sign in</Link>
         </p>
       </div>
     </div>
