@@ -4,6 +4,7 @@ import AppLayout from "@/components/AppLayout";
 import { entitiesApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Loader2, Flame, CheckCircle, Edit, StickyNote, Network, Calendar, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +24,8 @@ export default function EntityDetail() {
   const [loading, setLoading] = useState(true);
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [newDescription, setNewDescription] = useState("");
   const [relatedNotes, setRelatedNotes] = useState<RelatedNote[]>([]);
   const [relatedEntities, setRelatedEntities] = useState<EntityData[]>([]);
 
@@ -184,6 +187,16 @@ export default function EntityDetail() {
     } catch { toast({ title: "Error updating", variant: "destructive" }); }
   };
 
+  const handleSaveDescription = async () => {
+    if (!id) return;
+    try {
+      const { data } = await entitiesApi.update(id, { description: newDescription.trim() });
+      setEntity(data);
+      setEditingDescription(false);
+      toast({ title: "Description updated!" });
+    } catch { toast({ title: "Error updating description", variant: "destructive" }); }
+  };
+
   const getLast90Days = () => {
     const days: string[] = [];
     const today = new Date();
@@ -236,7 +249,26 @@ export default function EntityDetail() {
             {isHabit && <span className="bento-tag">Max: {longestStreak}</span>}
             {isHabit && <span className="bento-tag">Total: {totalCompletions}</span>}
           </div>
-          {entity.description && <p className="text-sm text-slate-400">{entity.description}</p>}
+          {editingDescription ? (
+            <div className="flex flex-col gap-2">
+              <Textarea value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Add description..." className="text-sm" rows={3} />
+              <div className="flex gap-2">
+                <Button size="sm" onClick={handleSaveDescription}>Save</Button>
+                <Button size="sm" variant="outline" onClick={() => { setEditingDescription(false); setNewDescription(entity?.description || ""); }}>Cancel</Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-start gap-2 group">
+              {entity.description ? (
+                <p className="text-sm text-slate-400 flex-1">{entity.description}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">No description</p>
+              )}
+              <Button variant="ghost" size="sm" onClick={() => { setEditingDescription(true); setNewDescription(entity?.description || ""); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <Edit className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
 
         {isHabit && (
