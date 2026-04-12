@@ -192,10 +192,7 @@ export default function EntityDetail() {
   };
 
   const getHeatmapColor = (val: number) => {
-    if (val === 0) return "bg-zinc-900";
-    if (val === 1) return "bg-cyan-900";
-    if (val <= 3) return "bg-cyan-600";
-    return "bg-cyan-300";
+    return val > 0 ? "bg-[#00BFC0]" : "bg-zinc-900";
   };
 
   if (loading) return <AppLayout><div className="flex justify-center items-center h-full"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div></AppLayout>;
@@ -250,7 +247,7 @@ export default function EntityDetail() {
 
             <div className="space-y-4">
               <h2 className="text-sm font-semibold text-slate-50 tracking-tight">Last 90 days activity</h2>
-              <div className="flex flex-wrap gap-1.5 bg-white/[0.01] backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
+              <div className="flex flex-wrap gap-1.5 bg-white/80 dark:bg-slate-950/25 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
                 {days.map((day) => (
                   <div 
                     key={day} 
@@ -258,18 +255,15 @@ export default function EntityDetail() {
                     className={cn(
                       "w-4 h-4 rounded transition-all hover:scale-125",
                       getHeatmapColor(heatmap[day] || 0),
-                      heatmap[day] && heatmap[day] > 0 ? "shadow-lg shadow-cyan-500/30" : ""
+                      heatmap[day] && heatmap[day] > 0 ? "shadow-lg shadow-[#00BFC0]/30" : ""
                     )} 
                   />
                 ))}
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span className="font-medium">Intensity:</span>
-                <div className="w-3 h-3 rounded-sm bg-zinc-900" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-900" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-600" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-300" />
-                <span className="text-slate-500 ml-1">(peak activity)</span>
+                <span className="font-medium">Activity:</span>
+                <div className="w-3 h-3 rounded-sm bg-[#00BFC0]" />
+                <span className="text-slate-500 ml-1">Tracked day</span>
               </div>
             </div>
           </>

@@ -179,12 +179,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className="hidden lg:flex w-56 border-r border-white/[0.08] bg-white/[0.01] backdrop-blur-xl flex-col shrink-0">
+      <aside className="hidden lg:flex w-56 border-r border-border bg-white/80 dark:bg-slate-950/35 backdrop-blur-xl flex-col shrink-0">
         {sidebar}
       </aside>
 
       <aside className={cn(
-        "lg:hidden fixed inset-y-0 left-0 w-64 bg-white/[0.01] backdrop-blur-xl border-r border-white/[0.08] flex flex-col z-50 transition-transform duration-200",
+        "lg:hidden fixed inset-y-0 left-0 w-64 bg-white/80 dark:bg-slate-950/35 backdrop-blur-xl border-r border-border flex flex-col z-50 transition-transform duration-200",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {sidebar}
