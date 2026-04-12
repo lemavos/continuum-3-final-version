@@ -72,7 +72,6 @@ export default function CTASection() {
                 transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
                 className="font-body text-[1.0625rem] leading-[1.75] text-[oklch(0.45_0.008_260)] mb-12 max-w-lg mx-auto"
               >
-                Join thousands of users creating their second brain with Continuum. 
                 Start organizing, connecting, and discovering your knowledge now.
               </motion.p>
 

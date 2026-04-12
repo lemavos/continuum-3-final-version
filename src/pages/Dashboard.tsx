@@ -46,7 +46,7 @@ export default function Dashboard() {
       title: "Notes",
       meta: `${metrics.totalNotes ?? "—"} notes`,
       description: "Manage your notes, ideas and journaling with smart search",
-      icon: <StickyNote className="w-4 h-4 text-primary" />,
+      icon: <StickyNote className="w-4 h-4 text-cyan-400" />,
       status: metrics.notesThisWeek ? `+${metrics.notesThisWeek} this week` : "Journal",
       tags: ["Writing", "Ideas"],
       colSpan: 2,
@@ -57,7 +57,7 @@ export default function Dashboard() {
       title: "Daily Habits",
       meta: `${todayEvents.length} completed`,
       description: "Track your daily habits and maintain your streak",
-      icon: <CheckCircle className="w-4 h-4 text-primary" />,
+      icon: <CheckCircle className="w-4 h-4 text-cyan-400" />,
       status: "Today",
       tags: ["Streaks", "Daily"],
       onClick: () => navigate("/entities?type=HABIT"),
@@ -66,7 +66,7 @@ export default function Dashboard() {
       title: "Entities",
       meta: `${metrics.totalEntities ?? "—"} total`,
       description: "People, projects, topics and connected organizations",
-      icon: <Network className="w-4 h-4 text-primary" />,
+      icon: <Network className="w-4 h-4 text-cyan-400" />,
       tags: ["Graph", "Connections"],
       colSpan: 2,
       onClick: () => navigate("/entities"),
@@ -103,10 +103,10 @@ export default function Dashboard() {
     <AppLayout>
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-8">
         <div className="space-y-1">
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">
             Hello, {user?.username || "User"}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-400">
             Here's a summary of your activity
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function Dashboard() {
           <div className="bento-card p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-medium text-foreground">
-                Plan <span className="text-primary">{plan}</span>
+                Plan <span className="text-cyan-400">{plan}</span>
               </h2>
               {/* <button onClick={() => navigate("/subscription")} className="text-xs text-primary/70 hover:text-primary transition-colors">
                 Manage →
@@ -140,7 +140,7 @@ export default function Dashboard() {
             { icon: Calendar, value: todayEvents.length, label: "Completed today" },
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="bento-card p-4 text-center space-y-2">
-              <Icon className="w-5 h-5 text-primary mx-auto" />
+              <Icon className="w-5 h-5 text-cyan-400 mx-auto" />
               <p className="text-2xl font-display font-semibold text-foreground">{value}</p>
               <p className="text-xs text-muted-foreground">{label}</p>
             </div>

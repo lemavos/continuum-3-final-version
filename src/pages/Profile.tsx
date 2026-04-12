@@ -74,8 +74,8 @@ export default function Profile() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Profile</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage your account information.</p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">Profile</h1>
+            <p className="text-sm text-slate-400 mt-1">Manage your account information.</p>
           </div>
 
           {/* <Button variant="outline" className="border-border" onClick={() => navigate("/subscription")}>
@@ -113,7 +113,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <Button onClick={handleSave} disabled={saving || !username.trim() || !email.trim()} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button onClick={handleSave} disabled={saving || !username.trim() || !email.trim()} className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20">
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               Save Changes
             </Button>
@@ -132,20 +132,20 @@ export default function Profile() {
                   <p className="text-xs text-muted-foreground">Toggle between light and dark visual.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sun className="w-4 h-4 text-muted-foreground" />
+                  <Moon className="w-4 h-4 text-cyan-400" />
                   <Switch
                     checked={mounted ? theme !== "light" : true}
                     onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
                     disabled={!mounted}
                   />
-                  <Moon className="w-4 h-4 text-primary" />
+                  <Moon className="w-4 h-4 text-cyan-400" />
                 </div>
               </div>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/50 p-4 space-y-2">
               <div className="flex items-center gap-2 text-foreground">
-                <BadgeCheck className="w-4 h-4 text-primary" />
+                <BadgeCheck className="w-4 h-4 text-cyan-400" />
                 <span className="text-sm font-medium">Account Status</span>
               </div>
               <p className="text-sm text-muted-foreground">

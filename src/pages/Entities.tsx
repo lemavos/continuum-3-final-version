@@ -121,13 +121,13 @@ export default function Entities() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Entities</h1>
-            {entitiesLimit && <p className="text-xs text-muted-foreground mt-1">{entitiesLimit}</p>}
-            {habitsLimit && <p className="text-xs text-muted-foreground mt-1">{habitsLimit}</p>}
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">Entities</h1>
+            {entitiesLimit && <p className="text-xs text-slate-400 mt-1">{entitiesLimit}</p>}
+            {habitsLimit && <p className="text-xs text-slate-400 mt-1">{habitsLimit}</p>}
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="w-4 h-4 mr-1" /> New Entity</Button>
+              <Button size="sm" className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"><Plus className="w-4 h-4 mr-1" /> New Entity</Button>
             </DialogTrigger>
             <DialogContent className="bg-card border-border">
               <DialogHeader><DialogTitle className="text-foreground">Create Entity</DialogTitle></DialogHeader>
@@ -189,20 +189,20 @@ export default function Entities() {
               return (
                 <div key={entity.id} className="bento-card group cursor-pointer" onClick={() => navigate(`/entities/${entity.id}`)}>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="bento-icon-box"><Icon className="w-4 h-4 text-primary" /></div>
+                    <div className="bento-icon-box"><Icon className="w-4 h-4 text-cyan-400" /></div>
                     <span className="bento-status">{typeLabels[entity.type]}</span>
                   </div>
                   <h3 className="font-medium text-foreground text-[15px] tracking-tight">{entity.title}</h3>
-                  {entity.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{entity.description}</p>}
+                  {entity.description && <p className="text-sm text-slate-400 mt-1 line-clamp-2">{entity.description}</p>}
                   <div className="flex items-center justify-between mt-3">
                     <div className="flex gap-1">
                       {entity.type === "HABIT" && (
-                        <button onClick={(e) => handleTrack(entity.id, e)} className={cn("bento-tag flex items-center gap-1 transition-colors", tracked && "bg-primary/20 text-primary")}>
+                        <button onClick={(e) => handleTrack(entity.id, e)} className={cn("bento-tag flex items-center gap-1 transition-colors", tracked && "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30")}>
                           <CheckCircle className="w-3 h-3" /> {tracked ? "Done" : "Track"}
                         </button>
                       )}
                       {entity.trackingDates && entity.trackingDates.length > 0 && (
-                        <span className="bento-tag flex items-center gap-1"><Flame className="w-3 h-3" /> {entity.trackingDates.length}</span>
+                        <span className="bento-tag flex items-center gap-1 text-cyan-400"><Flame className="w-3 h-3" /> {entity.trackingDates.length}</span>
                       )}
                     </div>
                     <button onClick={(e) => handleDelete(entity.id, e)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10">

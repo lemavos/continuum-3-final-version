@@ -49,7 +49,12 @@ export default function EntityDetail() {
             return;
           }
 
-          setHeatmap(normalizeHeatmapData(hRes.data));
+          // Try API heatmap first, fallback to trackingDates
+          const apiHeatmap = normalizeHeatmapData(hRes.data);
+          const trackingHeatmap = buildHeatmapFromTrackingDates(data.trackingDates || []);
+          const finalHeatmap = Object.keys(apiHeatmap).length > 0 ? apiHeatmap : trackingHeatmap;
+          
+          setHeatmap(finalHeatmap);
           setStats({
             ...sRes.data,
             totalCompletions: Array.isArray(data.trackingDates) ? data.trackingDates.length : sRes.data?.totalCompletions,
@@ -97,13 +102,31 @@ export default function EntityDetail() {
   const normalizeHeatmapData = (payload: unknown): HeatmapData => {
     if (!payload || typeof payload !== "object" || Array.isArray(payload)) return {};
     return Object.entries(payload).reduce<HeatmapData>((normalized, [key, value]) => {
-      const dateKey = key.split("T")[0];
+      // Handle both "2026-04-12" and "2026-04-12T00:00:00.000Z" formats
+      const dateKey = key.includes("T") ? key.split("T")[0] : key;
       const count = typeof value === "number" ? value : parseInt(String(value), 10);
       if (!Number.isNaN(count) && count >= 0) {
         normalized[dateKey] = (normalized[dateKey] || 0) + count;
       }
       return normalized;
     }, {});
+  };
+
+  const buildHeatmapFromTrackingDates = (dates: unknown[]): HeatmapData => {
+    if (!Array.isArray(dates)) return {};
+    
+    const heatmap: HeatmapData = {};
+    dates.forEach((date) => {
+      try {
+        // Handle both Date objects and ISO strings
+        const dateObj = typeof date === "string" ? new Date(date) : date instanceof Date ? date : new Date(String(date));
+        const dateKey = dateObj.toISOString().split("T")[0];
+        heatmap[dateKey] = (heatmap[dateKey] || 0) + 1;
+      } catch {
+        // Skip invalid dates
+      }
+    });
+    return heatmap;
   };
 
   const handleTrack = async () => {
@@ -169,10 +192,10 @@ export default function EntityDetail() {
   };
 
   const getHeatmapColor = (val: number) => {
-    if (val === 0) return "bg-accent";
-    if (val === 1) return "bg-primary/20";
-    if (val <= 3) return "bg-primary/50";
-    return "bg-primary";
+    if (val === 0) return "bg-zinc-900";
+    if (val === 1) return "bg-cyan-900";
+    if (val <= 3) return "bg-cyan-600";
+    return "bg-cyan-300";
   };
 
   if (loading) return <AppLayout><div className="flex justify-center items-center h-full"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div></AppLayout>;
@@ -188,7 +211,9 @@ export default function EntityDetail() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
+      <div className="relative">
+        <div className="absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-cyan-900/10 via-transparent to-transparent pointer-events-none"></div>
+        <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 relative z-10">
         <Button variant="ghost" size="sm" onClick={() => navigate("/entities")} className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
@@ -202,7 +227,7 @@ export default function EntityDetail() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">{entity.title}</h1>
+              <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">{entity.title}</h1>
               <Button variant="ghost" size="sm" onClick={() => { setEditingTitle(true); setNewTitle(entity?.title || ""); }}>
                 <Edit className="w-4 h-4" />
               </Button>
@@ -210,33 +235,41 @@ export default function EntityDetail() {
           )}
           <div className="flex gap-2">
             <span className="bento-tag">{entity.type}</span>
-            {isHabit && <span className="bento-tag flex items-center gap-1 text-primary"><Flame className="w-3 h-3" /> Streak: {streak} days</span>}
+            {isHabit && <span className="bento-tag flex items-center gap-1 text-cyan-400"><Flame className="w-3 h-3" /> Streak: {streak} days</span>}
             {isHabit && <span className="bento-tag">Max: {longestStreak}</span>}
             {isHabit && <span className="bento-tag">Total: {totalCompletions}</span>}
           </div>
-          {entity.description && <p className="text-sm text-muted-foreground">{entity.description}</p>}
+          {entity.description && <p className="text-sm text-slate-400">{entity.description}</p>}
         </div>
 
         {isHabit && (
           <>
-            <Button onClick={handleTrack} disabled={!!trackedToday} className={trackedToday ? "bg-accent text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90 glow-primary"}>
+            <Button onClick={handleTrack} disabled={!!trackedToday} className={trackedToday ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30" : "bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"}>
               <CheckCircle className="w-4 h-4 mr-1" /> {trackedToday ? "Done today ✓" : "Track today"}
             </Button>
 
-            <div className="space-y-3">
-              <h2 className="text-sm font-medium text-foreground">Last 90 days</h2>
-              <div className="flex flex-wrap gap-1">
+            <div className="space-y-4">
+              <h2 className="text-sm font-semibold text-slate-50 tracking-tight">Last 90 days activity</h2>
+              <div className="flex flex-wrap gap-1.5 bg-white/[0.01] backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
                 {days.map((day) => (
-                  <div key={day} title={`${day}: ${heatmap[day] || 0}`} className={cn("w-3 h-3 rounded-sm transition-colors", getHeatmapColor(heatmap[day] || 0))} />
+                  <div 
+                    key={day} 
+                    title={`${day}: ${heatmap[day] || 0} completions`} 
+                    className={cn(
+                      "w-4 h-4 rounded transition-all hover:scale-125",
+                      getHeatmapColor(heatmap[day] || 0),
+                      heatmap[day] && heatmap[day] > 0 ? "shadow-lg shadow-cyan-500/30" : ""
+                    )} 
+                  />
                 ))}
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>Less</span>
-                <div className="w-3 h-3 rounded-sm bg-accent" />
-                <div className="w-3 h-3 rounded-sm bg-primary/20" />
-                <div className="w-3 h-3 rounded-sm bg-primary/50" />
-                <div className="w-3 h-3 rounded-sm bg-primary" />
-                <span>More</span>
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <span className="font-medium">Intensity:</span>
+                <div className="w-3 h-3 rounded-sm bg-zinc-900" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-900" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-600" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-300" />
+                <span className="text-slate-500 ml-1">(peak activity)</span>
               </div>
             </div>
           </>
@@ -277,9 +310,9 @@ export default function EntityDetail() {
                 <button
                   key={note.id}
                   onClick={() => navigate(`/notes/${note.id}`)}
-                  className="flex w-full items-start gap-2 rounded-md border border-border/40 px-3 py-2 text-left transition-colors hover:bg-accent"
+                  className="flex w-full items-start gap-2 rounded-md border border-border/40 px-3 py-2 text-left transition-colors hover:bg-accent hover:border-cyan-500/30"
                 >
-                  <StickyNote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                  <StickyNote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm text-foreground">{note.title}</p>
                     <p className="text-xs text-muted-foreground">
@@ -316,11 +349,8 @@ export default function EntityDetail() {
             )}
           </div>
         </div>
-
-        <div className="bento-card p-4">
-          <p className="text-xs text-muted-foreground">Created on {new Date(entity.createdAt).toLocaleDateString("en-US")}</p>
-        </div>
       </div>
+    </div>
     </AppLayout>
   );
 }

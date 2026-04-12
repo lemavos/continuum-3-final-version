@@ -76,7 +76,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const sidebar = (
     <>
       <div className="p-5 flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold tracking-tight text-foreground">
+        <h2 className="font-display text-lg font-semibold tracking-tight text-slate-50">
           Continuum
         </h2>
         <button className="lg:hidden p-1 rounded hover:bg-accent" onClick={() => setSidebarOpen(false)}>
@@ -131,13 +131,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               to={item.to}
               onClick={() => setSidebarOpen(false)}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 border-l-2",
                 isActive
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "bg-cyan-500/5 text-slate-50 font-medium border-l-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+                  : "text-slate-400 hover:text-slate-50 hover:bg-white/[0.02] border-l-transparent"
               )}
             >
-              <item.icon className={cn("w-4 h-4", isActive && "text-primary")} />
+              <item.icon className={cn("w-[18px] h-[18px]", isActive ? "text-cyan-400 opacity-100" : "opacity-70 text-slate-400")} />
               {item.label}
             </Link>
           );
@@ -179,12 +179,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className="hidden lg:flex w-56 border-r border-border/50 bg-sidebar flex-col shrink-0">
+      <aside className="hidden lg:flex w-56 border-r border-white/[0.08] bg-white/[0.01] backdrop-blur-xl flex-col shrink-0">
         {sidebar}
       </aside>
 
       <aside className={cn(
-        "lg:hidden fixed inset-y-0 left-0 w-64 bg-sidebar border-r border-border/50 flex flex-col z-50 transition-transform duration-200",
+        "lg:hidden fixed inset-y-0 left-0 w-64 bg-white/[0.01] backdrop-blur-xl border-r border-white/[0.08] flex flex-col z-50 transition-transform duration-200",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {sidebar}

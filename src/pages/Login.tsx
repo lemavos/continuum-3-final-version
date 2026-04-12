@@ -153,10 +153,8 @@ export default function Login() {
                 </motion.div>
 
                 {/* Submit Button */}
-                <motion.button
+                <motion.div
                   {...fadeUp(0.4)}
-                  type="submit"
-                  disabled={loading}
                   className="w-full mt-8 relative group"
                 >
                   <div
@@ -177,7 +175,7 @@ export default function Login() {
                     )}
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>
-                </motion.button>
+                </motion.div>
               </form>
 
               {/* Divider */}
@@ -191,14 +189,14 @@ export default function Login() {
               </motion.div>
 
               {/* Google Button */}
-              <motion.button
+              <motion.div
                 {...fadeUp(0.5)}
-                type="button"
-                onClick={handleGoogleLogin}
-                className="w-full group"
+                className="w-full"
               >
                 <Button
                   variant="outline"
+                  type="button"
+                  onClick={handleGoogleLogin}
                   className="w-full border border-[oklch(0.72_0.14_195/0.3)] bg-[oklch(0.72_0.14_195/0.05)] hover:bg-[oklch(0.72_0.14_195/0.1)] text-[oklch(0.93_0.005_60)] transition-colors"
                 >
                   <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
@@ -209,7 +207,7 @@ export default function Login() {
                   </svg>
                   Google
                 </Button>
-              </motion.button>
+              </motion.div>
             </motion.div>
 
             {/* Footer Link */}

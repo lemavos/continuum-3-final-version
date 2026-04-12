@@ -185,10 +185,8 @@ export default function Register() {
                 </motion.div>
 
                 {/* Submit Button */}
-                <motion.button
+                <motion.div
                   {...fadeUp(0.45)}
-                  type="submit"
-                  disabled={loading}
                   className="w-full mt-8 relative group"
                 >
                   <div
@@ -209,7 +207,7 @@ export default function Register() {
                     )}
                     {loading ? "Creating Account..." : "Create Account"}
                   </Button>
-                </motion.button>
+                </motion.div>
               </form>
 
               {/* Features */}

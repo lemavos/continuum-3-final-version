@@ -68,10 +68,10 @@ export default function Notes() {
       <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Notes</h1>
-            {limitMsg && <p className="text-xs text-muted-foreground mt-1">{limitMsg}</p>}
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">Notes</h1>
+            {limitMsg && <p className="text-xs text-slate-400 mt-1">{limitMsg}</p>}
           </div>
-          <Button onClick={handleCreateNote} size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={!canCreateNote && canCreateNote !== undefined}>
+          <Button onClick={handleCreateNote} size="sm" className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20" disabled={!canCreateNote && canCreateNote !== undefined}>
             <Plus className="w-4 h-4 mr-1" /> New Note
           </Button>
         </div>
