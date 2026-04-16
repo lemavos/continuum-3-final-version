@@ -160,13 +160,14 @@ export const authApi = {
 export const notesApi = {
   list: () => api.get("/api/notes"),
   get: (id: string) => api.get(`/api/notes/${id}`),
-  create: (title: string, content: unknown, folderId?: string, _entityIds?: string[]) =>
+  create: (title: string, content: unknown, folderId?: string, _entityIds?: string[], type?: string) =>
     api.post("/api/notes", {
       title,
       content: normalizeNoteContent(content),
       folderId,
+      type,
     }),
-  update: (id: string, data: { title?: string; content?: unknown; folderId?: string; entityIds?: string[] }) => {
+  update: (id: string, data: { title?: string; content?: unknown; folderId?: string; entityIds?: string[]; type?: string }) => {
     const payload: Record<string, unknown> = {};
 
     if (typeof data.title === "string") {
@@ -177,6 +178,10 @@ export const notesApi = {
       payload.folderId = data.folderId;
     }
 
+    if (typeof data.type === "string") {
+      payload.type = data.type;
+    }
+
     if (Object.prototype.hasOwnProperty.call(data, "content")) {
       payload.content = normalizeNoteContent(data.content);
     }
@@ -185,6 +190,7 @@ export const notesApi = {
   },
   delete: (id: string) => api.delete(`/api/notes/${id}`),
   getBacklinks: (id: string) => api.get(`/api/notes/${id}/backlinks`),
+  getTypes: () => api.get("/api/notes/types"),
 };
 
 // Folders
@@ -222,6 +228,11 @@ export const entitiesApi = {
 export const metricsApi = {
   dashboard: () => api.get("/api/metrics/dashboard"),
   timeline: (entityId: string) => api.get(`/api/metrics/entities/${entityId}/timeline`),
+};
+
+// Dashboard
+export const dashboardApi = {
+  summary: () => api.get("/api/dashboard/summary"),
 };
 
 // Search

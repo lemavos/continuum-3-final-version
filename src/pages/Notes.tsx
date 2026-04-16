@@ -11,14 +11,16 @@ import { Plus, Search, StickyNote, Folder, Trash2, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
-interface NoteSummary { id: string; title: string; folderId?: string; createdAt: string; updatedAt: string; }
+interface NoteSummary { id: string; title: string; type?: string; folderId?: string; createdAt: string; updatedAt: string; }
 interface FolderItem { id: string; name: string; parentId?: string; }
 
 export default function Notes() {
   const [notes, setNotes] = useState<NoteSummary[]>([]);
   const [folders, setFolders] = useState<FolderItem[]>([]);
+  const [types, setTypes] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const navigate = useNavigate();
@@ -29,9 +31,10 @@ export default function Notes() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [notesRes, foldersRes] = await Promise.all([notesApi.list(), foldersApi.list()]);
+      const [notesRes, foldersRes, typesRes] = await Promise.all([notesApi.list(), foldersApi.list(), notesApi.getTypes()]);
       setNotes(Array.isArray(notesRes.data) ? notesRes.data : []);
       setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : []);
+      setTypes(Array.isArray(typesRes.data) ? typesRes.data : []);
     } catch { toast({ title: "Error loading notes", variant: "destructive" }); }
     finally { setLoading(false); }
   };
@@ -63,14 +66,23 @@ export default function Notes() {
 
   const handleDeleteNote = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    try { await notesApi.delete(id); setNotes((prev) => prev.filter((n) => n.id !== id)); applyUsageDelta({ notesCount: -1 }); void refresh(); }
+    try { 
+      await notesApi.delete(id); 
+      setNotes((prev) => prev.filter((n) => n.id !== id)); 
+      applyUsageDelta({ notesCount: -1 }); 
+      void refresh();
+      // Recarregar tipos (nota deletada pode ter deixado seu tipo orfão)
+      const typesRes = await notesApi.getTypes();
+      setTypes(Array.isArray(typesRes.data) ? typesRes.data : []);
+    }
     catch { toast({ title: "Error deleting", variant: "destructive" }); }
   };
 
   const filtered = notes.filter((n) => {
     const matchSearch = n.title.toLowerCase().includes(search.toLowerCase());
     const matchFolder = selectedFolder ? n.folderId === selectedFolder : true;
-    return matchSearch && matchFolder;
+    const matchType = selectedType ? n.type === selectedType : true;
+    return matchSearch && matchFolder && matchType;
   });
 
   const limitMsg = getLimitMessage("notes");
@@ -89,30 +101,64 @@ export default function Notes() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-4">
-          <div className="lg:w-44 lg:shrink-0 space-y-0.5">
-            <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-              <button
-                onClick={() => setSelectedFolder(null)}
-                className={cn(
-                  "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
-                  !selectedFolder ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
-                <StickyNote className="w-3.5 h-3.5" /> All
-              </button>
-              {folders.map((f) => (
+          <div className="lg:w-44 lg:shrink-0 space-y-4">
+            {/* Folders section */}
+            <div>
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">Folders</h3>
+              <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
                 <button
-                  key={f.id}
-                  onClick={() => setSelectedFolder(f.id)}
+                  onClick={() => setSelectedFolder(null)}
                   className={cn(
                     "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
-                    selectedFolder === f.id ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    !selectedFolder ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   )}
                 >
-                  <Folder className="w-3.5 h-3.5" /> {f.name}
+                  <StickyNote className="w-3.5 h-3.5" /> All
                 </button>
-              ))}
+                {folders.map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setSelectedFolder(f.id)}
+                    className={cn(
+                      "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
+                      selectedFolder === f.id ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                  >
+                    <Folder className="w-3.5 h-3.5" /> {f.name}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Types section */}
+            {types.length > 0 && (
+              <div>
+                <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">Types</h3>
+                <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                  <button
+                    onClick={() => setSelectedType(null)}
+                    className={cn(
+                      "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
+                      !selectedType ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                  >
+                    All Types
+                  </button>
+                  {types.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedType(type)}
+                      className={cn(
+                        "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
+                        selectedType === type ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                      )}
+                    >
+                      <span className="text-xs">#</span> {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 space-y-3">

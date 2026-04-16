@@ -4,6 +4,13 @@ import AppLayout from "@/components/AppLayout";
 import { entitiesApi, notesApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowLeft, Save, Loader2, Check, PanelRight, PanelRightClose } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { TiptapEditor, type TiptapEditorHandle } from "@/components/TiptapEditor";
@@ -14,6 +21,7 @@ interface NoteData {
   id: string;
   title: string;
   content: any;
+  type?: string;
   folderId?: string;
   entityIds: string[];
   createdAt: string;
@@ -28,6 +36,8 @@ export default function NoteEditor() {
 
   const [note, setNote] = useState<NoteData | null>(null);
   const [title, setTitle] = useState("");
+  const [type, setType] = useState<string>("");
+  const [availableTypes, setAvailableTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [showBacklinks, setShowBacklinks] = useState(false);
@@ -35,6 +45,7 @@ export default function NoteEditor() {
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedJSON = useRef<string>("");
   const lastSavedTitle = useRef<string>("");
+  const lastSavedType = useRef<string>("");
   const currentJSON = useRef<any>(null);
 
   // Load note
@@ -44,8 +55,8 @@ export default function NoteEditor() {
 
     setLoading(true);
 
-    Promise.allSettled([notesApi.get(id), entitiesApi.list()])
-      .then(([noteResult, entitiesResult]) => {
+    Promise.allSettled([notesApi.get(id), entitiesApi.list(), notesApi.getTypes()])
+      .then(([noteResult, entitiesResult, typesResult]) => {
         if (noteResult.status !== "fulfilled") {
           throw noteResult.reason;
         }
@@ -70,13 +81,20 @@ export default function NoteEditor() {
             };
         const normalizedContent = sanitized.doc;
 
+        // Load available types
+        if (typesResult.status === "fulfilled" && Array.isArray(typesResult.value.data)) {
+          setAvailableTypes(typesResult.value.data);
+        }
+
         setNote({
           ...data,
           content: normalizedContent,
           entityIds: sanitized.entityIds,
         });
         setTitle(data.title);
+        setType(data.type || "");
         lastSavedTitle.current = data.title;
+        lastSavedType.current = data.type || "";
         currentJSON.current = sanitized.doc;
         lastSavedJSON.current = JSON.stringify(normalizedContent);
 
@@ -108,10 +126,10 @@ export default function NoteEditor() {
   }, [id, navigate, toast]);
 
   const doSave = useCallback(
-    async (t: string, json: any) => {
+    async (t: string, json: any, newType: string) => {
       if (!id) return;
       const jsonStr = JSON.stringify(json);
-      if (t === lastSavedTitle.current && jsonStr === lastSavedJSON.current) return;
+      if (t === lastSavedTitle.current && jsonStr === lastSavedJSON.current && newType === lastSavedType.current) return;
 
       setSaveStatus("saving");
       try {
@@ -120,9 +138,11 @@ export default function NoteEditor() {
           title: t,
           content: json,
           entityIds,
+          type: newType,
         });
         lastSavedTitle.current = t;
         lastSavedJSON.current = jsonStr;
+        lastSavedType.current = newType;
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 2000);
       } catch (error: any) {
@@ -138,30 +158,35 @@ export default function NoteEditor() {
   );
 
   const scheduleAutoSave = useCallback(
-    (t: string, json: any) => {
+    (t: string, json: any, newType: string) => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-      autoSaveTimer.current = setTimeout(() => doSave(t, json), 1500);
+      autoSaveTimer.current = setTimeout(() => doSave(t, json, newType), 1500);
     },
     [doSave]
   );
 
   const handleTitleChange = (val: string) => {
     setTitle(val);
-    scheduleAutoSave(val, currentJSON.current);
+    scheduleAutoSave(val, currentJSON.current, type);
+  };
+
+  const handleTypeChange = (val: string) => {
+    setType(val);
+    scheduleAutoSave(title, currentJSON.current, val);
   };
 
   const handleEditorChange = useCallback(
     (json: any) => {
       currentJSON.current = json;
-      scheduleAutoSave(title, json);
+      scheduleAutoSave(title, json, type);
     },
-    [title, scheduleAutoSave]
+    [title, type, scheduleAutoSave]
   );
 
   const handleManualSave = async () => {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     const json = editorRef.current?.getJSON() || currentJSON.current;
-    await doSave(title, json);
+    await doSave(title, json, type);
     toast({ title: "Note saved!" });
   };
 
@@ -241,6 +266,36 @@ export default function NoteEditor() {
               placeholder="Note title..."
               className="text-2xl font-display font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent text-foreground mb-4 h-auto"
             />
+
+            <div className="mb-4 flex gap-2 items-end">
+              <div className="flex-1">
+                <label className="text-xs font-medium text-muted-foreground block mb-1"> Note Type (optional)</label>
+                {availableTypes.length > 0 ? (
+                  <Select value={type} onValueChange={handleTypeChange}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Select a type or type below..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableTypes.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : null}
+              </div>
+              <div className="flex-1">
+                <label className="text-xs font-medium text-muted-foreground block mb-1">{availableTypes.length > 0 ? "Or create new" : "New type"}</label>
+                <Input
+                  value={type}
+                  onChange={(e) => handleTypeChange(e.target.value)}
+                  placeholder="Type name..."
+                  maxLength={100}
+                  className="h-9"
+                />
+              </div>
+            </div>
 
             {currentJSON.current && (
               <TiptapEditor

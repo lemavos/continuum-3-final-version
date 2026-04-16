@@ -116,3 +116,44 @@ export interface UserUsage {
   habitsCount: number;
   vaultSizeMB: number;
 }
+
+// Dashboard DTOs
+export interface DashboardStatsDTO {
+  totalNotes: number;
+  totalEntities: number;
+  totalHabits: number;
+  activeHabits: number;
+  entityTypes: Record<string, number>;
+}
+
+export interface StorageUsageDTO {
+  usedBytes: number;
+  limitBytes: number;
+  formattedUsed: string;
+  formattedLimit: string;
+  percentage: number;
+}
+
+export interface RecentNoteDTO {
+  id: string;
+  title: string;
+  type: string;
+  preview: string;
+  createdAt: string;
+  updatedAt: string;
+  entityIds: string[];
+}
+
+export interface HabitActivityDTO {
+  dailyCompletions: Record<string, number>;
+  currentStreak: number;
+  longestStreak: number;
+  inactivePeriods: number;
+}
+
+export interface DashboardSummaryDTO {
+  stats: DashboardStatsDTO;
+  storageUsage: StorageUsageDTO;
+  recentNotes: RecentNoteDTO[];
+  habitActivity: HabitActivityDTO;
+}
