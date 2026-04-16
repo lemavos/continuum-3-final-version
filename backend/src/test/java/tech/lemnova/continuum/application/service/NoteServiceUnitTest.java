@@ -88,7 +88,7 @@ public class NoteServiceUnitTest {
         when(noteRepo.save(any(Note.class))).thenReturn(savedNote);
         when(entityRepo.findByUserId("user1")).thenReturn(List.of());
 
-        var result = noteService.create(new tech.lemnova.continuum.controller.dto.note.NoteCreateRequest("Test", contentNode, ""));
+        var result = noteService.create(new tech.lemnova.continuum.controller.dto.note.NoteCreateRequest("Test", contentNode, "", "note"));
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo("n1");
