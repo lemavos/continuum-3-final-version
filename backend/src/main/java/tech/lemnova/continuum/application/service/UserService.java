@@ -96,4 +96,9 @@ public class UserService {
         // 5. Finally, delete the user
         userRepository.delete(user);
     }
+
+    public User getById(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found: " + userId));
+    }
 }

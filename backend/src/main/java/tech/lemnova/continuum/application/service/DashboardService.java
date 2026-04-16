@@ -80,7 +80,7 @@ public class DashboardService {
         // Estimate: 2KB per note (content + metadata), 1KB per entity, 10KB overhead
         long estimatedUsedBytes = (totalNotes * 2048) + (totalEntities * 1024) + 10240;
 
-        long limitBytes = planConfig.getStorageLimitBytes();
+        long limitBytes = planConfig.getLimits(userService.getById(userId).getPlan()).maxMetadataSizeKb() * 1024L;
         return StorageUsageDTO.from(estimatedUsedBytes, limitBytes);
     }
 
