@@ -11,7 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Save, Loader2, Check, PanelRight, PanelRightClose } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Save, Loader2, Check, PanelRight, PanelRightClose, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { TiptapEditor, type TiptapEditorHandle } from "@/components/TiptapEditor";
 import { BacklinksPanel } from "@/components/BacklinksPanel";
@@ -41,6 +50,8 @@ export default function NoteEditor() {
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [showBacklinks, setShowBacklinks] = useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const [configOpen, setConfigOpen] = useState(false);
 
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedJSON = useRef<string>("");
@@ -159,10 +170,11 @@ export default function NoteEditor() {
 
   const scheduleAutoSave = useCallback(
     (t: string, json: any, newType: string) => {
+      if (!autoSaveEnabled) return;
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
       autoSaveTimer.current = setTimeout(() => doSave(t, json, newType), 1500);
     },
-    [doSave]
+    [doSave, autoSaveEnabled]
   );
 
   const handleTitleChange = (val: string) => {
@@ -235,6 +247,64 @@ export default function NoteEditor() {
                   </>
                 )}
               </div>
+              <Dialog open={configOpen} onOpenChange={setConfigOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Note Settings</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="note-type">Note Type (optional)</Label>
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          {availableTypes.length > 0 ? (
+                            <Select value={type} onValueChange={handleTypeChange}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a type..." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableTypes.map((t) => (
+                                  <SelectItem key={t} value={t}>
+                                    {t}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : null}
+                        </div>
+                        <div className="flex-1">
+                          <Input
+                            value={type}
+                            onChange={(e) => handleTypeChange(e.target.value)}
+                            placeholder="Or create new..."
+                            maxLength={100}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="auto-save">Auto Save</Label>
+                        <p className="text-sm text-muted-foreground">Automatically save changes every few seconds</p>
+                      </div>
+                      <Switch
+                        id="auto-save"
+                        checked={autoSaveEnabled}
+                        onCheckedChange={setAutoSaveEnabled}
+                      />
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="ghost"
                 size="sm"
@@ -266,36 +336,6 @@ export default function NoteEditor() {
               placeholder="Note title..."
               className="text-2xl font-display font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent text-foreground mb-4 h-auto"
             />
-
-            <div className="mb-4 flex gap-2 items-end">
-              <div className="flex-1">
-                <label className="text-xs font-medium text-muted-foreground block mb-1"> Note Type (optional)</label>
-                {availableTypes.length > 0 ? (
-                  <Select value={type} onValueChange={handleTypeChange}>
-                    <SelectTrigger className="h-9">
-                      <SelectValue placeholder="Select a type or type below..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableTypes.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : null}
-              </div>
-              <div className="flex-1">
-                <label className="text-xs font-medium text-muted-foreground block mb-1">{availableTypes.length > 0 ? "Or create new" : "New type"}</label>
-                <Input
-                  value={type}
-                  onChange={(e) => handleTypeChange(e.target.value)}
-                  placeholder="Type name..."
-                  maxLength={100}
-                  className="h-9"
-                />
-              </div>
-            </div>
 
             {currentJSON.current && (
               <TiptapEditor

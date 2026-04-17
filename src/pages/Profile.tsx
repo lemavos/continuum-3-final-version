@@ -53,7 +53,6 @@ export default function Profile() {
       await authApi.updateMe({
         username,
         name: username,
-        email,
       });
 
       await refreshUser();
@@ -98,7 +97,13 @@ export default function Profile() {
 
               <div className="space-y-2">
                 <Label htmlFor="profile-email">Email</Label>
-                <Input id="profile-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-accent border-border" />
+                <div className="relative">
+                  <Input id="profile-email" type="email" value={email} readOnly className="bg-accent/50 border-border pr-20" />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground bg-accent px-2 py-0.5 rounded">
+                    Google
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">Email is managed by Google authentication</p>
               </div>
             </div>
 
@@ -113,7 +118,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <Button onClick={handleSave} disabled={saving || !username.trim() || !email.trim()} className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20">
+            <Button onClick={handleSave} disabled={saving || !username.trim()} className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20">
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               Save Changes
             </Button>

@@ -131,20 +131,20 @@ export default function Notes() {
             </div>
 
             {/* Types section */}
-            {types.length > 0 && (
-              <div>
-                <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">Types</h3>
-                <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-                  <button
-                    onClick={() => setSelectedType(null)}
-                    className={cn(
-                      "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
-                      !selectedType ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    )}
-                  >
-                    All Types
-                  </button>
-                  {types.map((type) => (
+            <div>
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">Types</h3>
+              <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                <button
+                  onClick={() => setSelectedType(null)}
+                  className={cn(
+                    "flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg text-sm transition-all shrink-0",
+                    !selectedType ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  )}
+                >
+                  All Types
+                </button>
+                {types.length > 0 ? (
+                  types.map((type) => (
                     <button
                       key={type}
                       onClick={() => setSelectedType(type)}
@@ -155,10 +155,12 @@ export default function Notes() {
                     >
                       <span className="text-xs">#</span> {type}
                     </button>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-muted-foreground px-3 py-1">No types yet. Add types to your notes to filter here.</p>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           <div className="flex-1 space-y-3">
