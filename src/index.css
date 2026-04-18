@@ -6,56 +6,56 @@
 
 @layer base {
   :root {
-    --background: 210 25% 98%;
-    --foreground: 222 27% 11%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 27% 11%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 27% 11%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 180 100% 38%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 174 100% 41%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 222 27% 14%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 85%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 220 10% 42%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 210 20% 96%;
-    --accent-foreground: 222 27% 14%;
+    --accent: 0 0% 8%;
+    --accent-foreground: 0 0% 90%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
     --ring: 174 100% 41%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 10% 42%;
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 0 0% 60%;
     --sidebar-primary: 174 100% 41%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 210 20% 96%;
-    --sidebar-accent-foreground: 222 27% 14%;
-    --sidebar-border: 220 15% 88%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 10%;
     --sidebar-ring: 174 100% 41%;
 
     --success: 174 100% 41%;
-    --success-foreground: 0 0% 4%;
+    --success-foreground: 0 0% 0%;
     --warning: 45 100% 60%;
-    --warning-foreground: 0 0% 4%;
+    --warning-foreground: 0 0% 0%;
     --info: 174 100% 41%;
-    --info-foreground: 0 0% 4%;
+    --info-foreground: 0 0% 0%;
 
-    --bento-dot: 220 18% 18% / 0.04;
-    --bento-border: 220 15% 88% / 1;
+    --bento-dot: 0 0% 100% / 0.02;
+    --bento-border: 0 0% 100% / 0.06;
     --bento-hover-shadow: 174 100% 41% / 0.08;
-    --bento-gradient-via: 174 100% 41% / 0.05;
+    --bento-gradient-via: 174 100% 41% / 0.03;
   }
 
   .dark {
@@ -110,7 +110,7 @@
   }
 
   html {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   html.dark {

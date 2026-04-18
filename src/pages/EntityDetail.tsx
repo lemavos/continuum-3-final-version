@@ -279,7 +279,7 @@ export default function EntityDetail() {
 
             <div className="space-y-4">
               <h2 className="text-sm font-semibold text-slate-50 tracking-tight">Last 90 days activity</h2>
-              <div className="flex flex-wrap gap-1.5 bg-white/80 dark:bg-slate-950/25 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
+              <div className="flex flex-wrap gap-1.5 bg-card/80 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
                 {days.map((day) => (
                   <div 
                     key={day} 
