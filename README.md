@@ -9,9 +9,11 @@
 ### V2
 - started: 14-04-2026;
 - ended: 18-04-2026
+- updates: ~23
 
 ### V3
 - started: 18-04-2026;
 - ended: 
+- updates: 
 
 ---

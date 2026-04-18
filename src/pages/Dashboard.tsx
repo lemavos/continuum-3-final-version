@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
 import { BentoGrid, type BentoItem } from "@/components/ui/bento-grid";
-import { dashboardApi } from "@/lib/api";
+import { dashboardApi, entitiesApi, trackingApi, graphApi } from "@/lib/api";
 import { usePlanGate } from "@/hooks/usePlanGate";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -12,8 +13,11 @@ import {
   FileText,
   BarChart3,
   Plus,
+  Network,
+  CheckCircle,
+  Circle,
 } from "lucide-react";
-import type { Plan, DashboardSummaryDTO } from "@/types";
+import type { Plan, DashboardSummaryDTO, Entity } from "@/types";
 import { PLAN_LIMITS } from "@/types";
 
 export default function Dashboard() {
@@ -26,12 +30,34 @@ export default function Dashboard() {
   const plan: Plan = (user?.plan as Plan) || "FREE";
   const limits = PLAN_LIMITS[plan];
 
+  // Fetch summary
   useEffect(() => {
     dashboardApi.summary()
       .then((r) => setSummary(r.data))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  // Fetch habits
+  const { data: habits } = useQuery({
+    queryKey: ["entities", "HABIT"],
+    queryFn: async () => {
+      const response = await entitiesApi.list();
+      return response.data.filter((entity: Entity) => entity.type === "HABIT");
+    },
+  });
+
+  // Fetch today's tracking
+  const { data: todayTracking } = useQuery({
+    queryKey: ["tracking", "today"],
+    queryFn: () => trackingApi.today().then(r => r.data),
+  });
+
+  // Fetch graph data for preview
+  const { data: graphData } = useQuery({
+    queryKey: ["graph", "data"],
+    queryFn: () => graphApi.data().then(r => r.data),
+  });
 
   useEffect(() => {
     if (!summary?.storageUsage || usage == null) return;
@@ -44,39 +70,17 @@ export default function Dashboard() {
     return new Date(value).toLocaleDateString();
   };
 
-  const getHeatmapColor = (count: number) => {
-    if (count === 0) return "bg-slate-800";
-    if (count <= 2) return "bg-cyan-900";
-    if (count <= 4) return "bg-cyan-700";
-    return "bg-cyan-500";
+  // Get pending habits today
+  const getPendingHabits = () => {
+    if (!habits || !todayTracking) return [];
+    const today = new Date().toISOString().split('T')[0];
+    return habits.filter((habit: Entity) => {
+      const tracked = todayTracking.find((t: any) => t.entityId === habit.id && t.date === today);
+      return !tracked;
+    });
   };
 
-  const generateHeatmap = () => {
-    if (!summary?.habitActivity.dailyCompletions) return null;
-
-    const today = new Date();
-    const days = [];
-    // Generate last 30 days to match backend data
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      const count = summary.habitActivity.dailyCompletions[dateStr] || 0;
-      days.push({ date: dateStr, count });
-    }
-
-    return (
-      <div className="grid grid-cols-10 gap-1 mt-4">
-        {days.map((day, i) => (
-          <div
-            key={i}
-            className={`w-3 h-3 rounded-sm ${getHeatmapColor(day.count)}`}
-            title={`${day.date}: ${day.count} completions`}
-          />
-        ))}
-      </div>
-    );
-  };
+  const pendingHabits = getPendingHabits();
 
   const bentoItems: BentoItem[] = [
     // Welcome/Storage Widget
@@ -99,33 +103,7 @@ export default function Dashboard() {
       ) : null,
     },
 
-    // Heatmap Widget
-    {
-      title: "Habit Activity",
-      meta: summary?.habitActivity ? `${summary.habitActivity.currentStreak} day streak` : "—",
-      description: "Your daily habit completion heatmap",
-      icon: <Flame className="w-4 h-4 text-orange-400" />,
-      status: summary?.habitActivity ? `Longest dry spell: ${summary.habitActivity.longestInactive} days` : "",
-      tags: ["Streaks", "Activity"],
-      colSpan: 2,
-      customContent: summary?.habitActivity ? generateHeatmap() : (
-        <div className="mt-4 text-center text-muted-foreground">
-          <Flame className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">No habit activity yet</p>
-          <p className="text-xs">Start tracking habits to see your progress</p>
-          <button
-            onClick={() => navigate("/entities?type=HABIT")}
-            className="mt-2 inline-flex items-center gap-1 text-xs text-orange-400 hover:text-orange-300 transition-colors"
-          >
-            <Plus className="w-3 h-3" />
-            Create habit
-          </button>
-        </div>
-      ),
-      onClick: () => navigate("/entities?type=HABIT"),
-    },
-
-    // Quick Access Widget
+    // Recent Notes
     {
       title: "Recent Notes",
       meta: summary?.recentNotes ? `${summary.recentNotes.length} recent` : "—",
@@ -177,35 +155,140 @@ export default function Dashboard() {
       onClick: () => navigate("/notes"),
     },
 
-    // Stats Widget
+    // Pending Habits Today
     {
-      title: "Quick Stats",
-      meta: summary?.stats ? `${summary.stats.totalNotes} notes` : "—",
-      description: "Overview of your content and activity",
+      title: "Today's Habits",
+      meta: `${pendingHabits.length} pending`,
+      description: "Habits you haven't completed today",
+      icon: <Flame className="w-4 h-4 text-orange-400" />,
+      status: "Complete your daily habits",
+      tags: ["Habits", "Today"],
+      colSpan: 2,
+      customContent: pendingHabits.length > 0 ? (
+        <div className="mt-4 space-y-2">
+          {pendingHabits.slice(0, 3).map((habit: Entity) => (
+            <div
+              key={habit.id}
+              className="flex items-center justify-between p-2 rounded-md bg-slate-800/50 hover:bg-slate-800 cursor-pointer transition-colors"
+              onClick={() => navigate(`/entities/${habit.id}`)}
+            >
+              <div className="flex items-center gap-2">
+                <Circle className="w-4 h-4 text-orange-400" />
+                <p className="text-sm font-medium">{habit.title}</p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Mark as complete
+                  navigate(`/entities/${habit.id}`);
+                }}
+                className="text-xs text-orange-400 hover:text-orange-300"
+              >
+                Complete
+              </button>
+            </div>
+          ))}
+          {pendingHabits.length > 3 && (
+            <button
+              onClick={() => navigate("/entities?type=HABIT")}
+              className="w-full text-xs text-orange-400 hover:text-orange-300 transition-colors"
+            >
+              View all habits →
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="mt-4 text-center text-muted-foreground">
+          <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-50 text-green-400" />
+          <p className="text-sm">All habits completed today!</p>
+          <p className="text-xs">Great job keeping up with your routines</p>
+        </div>
+      ),
+      onClick: () => navigate("/entities?type=HABIT"),
+    },
+
+    // Graph Preview
+    {
+      title: "Knowledge Graph",
+      meta: graphData ? `${graphData.nodes?.length || 0} nodes` : "—",
+      description: "Preview of your knowledge connections",
+      icon: <Network className="w-4 h-4 text-purple-400" />,
+      status: "Click to explore",
+      tags: ["Graph", "Connections"],
+      colSpan: 2,
+      customContent: (
+        <div className="mt-4 text-center">
+          <div className="w-full h-20 bg-slate-800/50 rounded-md flex items-center justify-center cursor-pointer hover:bg-slate-800 transition-colors" onClick={() => navigate("/graph")}>
+            <Network className="w-8 h-8 text-purple-400 opacity-50" />
+            <p className="text-xs text-muted-foreground ml-2">View Graph</p>
+          </div>
+        </div>
+      ),
+      onClick: () => navigate("/graph"),
+    },
+
+    // Plan Limits
+    {
+      title: "Plan Limits",
+      meta: `${plan} plan`,
+      description: "Your current usage limits",
       icon: <BarChart3 className="w-4 h-4 text-cyan-400" />,
-      status: "Your activity",
-      tags: ["Stats", "Overview"],
-      colSpan: 1,
-      customContent: summary?.stats ? (
+      status: "Upgrade for more",
+      tags: ["Plan", "Limits"],
+      colSpan: 2,
+      customContent: usage ? (
         <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Notes</span>
-            <span className="text-sm font-medium">{summary.stats.totalNotes}</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Notes</span>
+              <span className="text-muted-foreground">
+                {usage.notesCount} / {limits.maxNotes === -1 ? "∞" : limits.maxNotes}
+              </span>
+            </div>
+            <Progress
+              value={limits.maxNotes === -1 ? 0 : Math.min((usage.notesCount / limits.maxNotes) * 100, 100)}
+              className="h-1"
+            />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Entities</span>
-            <span className="text-sm font-medium">{summary.stats.totalEntities}</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Entities</span>
+              <span className="text-muted-foreground">
+                {usage.entitiesCount} / {limits.maxEntities === -1 ? "∞" : limits.maxEntities}
+              </span>
+            </div>
+            <Progress
+              value={limits.maxEntities === -1 ? 0 : Math.min((usage.entitiesCount / limits.maxEntities) * 100, 100)}
+              className="h-1"
+            />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Habits</span>
-            <span className="text-sm font-medium">{summary.stats.totalHabits}</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Habits</span>
+              <span className="text-muted-foreground">
+                {usage.habitsCount} / {limits.maxHabits === -1 ? "∞" : limits.maxHabits}
+              </span>
+            </div>
+            <Progress
+              value={limits.maxHabits === -1 ? 0 : Math.min((usage.habitsCount / limits.maxHabits) * 100, 100)}
+              className="h-1"
+            />
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Active</span>
-            <span className="text-sm font-medium text-orange-400">{summary.stats.activeHabits}</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Storage</span>
+              <span className="text-muted-foreground">
+                {usage.vaultSizeMB}MB / {limits.maxVaultSizeMB}MB
+              </span>
+            </div>
+            <Progress
+              value={Math.min((usage.vaultSizeMB / limits.maxVaultSizeMB) * 100, 100)}
+              className="h-1"
+            />
           </div>
         </div>
       ) : null,
+      onClick: () => navigate("/subscription"),
     },
   ];
 
@@ -220,7 +303,7 @@ export default function Dashboard() {
             <p className="text-sm text-slate-400">Loading your dashboard...</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <div key={i} className="bento-card p-5 animate-pulse">
                 <div className="h-4 bg-slate-700 rounded mb-2"></div>
                 <div className="h-3 bg-slate-700 rounded mb-4"></div>
@@ -246,67 +329,6 @@ export default function Dashboard() {
         </div>
 
         <BentoGrid items={bentoItems} />
-
-        {/* Plan Usage */}
-        {usage && (
-          <div className="bento-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-foreground">
-                Plan <span className="text-cyan-400">{plan}</span>
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Notes</span>
-                  <span className="text-muted-foreground">
-                    {usage.notesCount} / {limits.maxNotes === -1 ? "∞" : limits.maxNotes}
-                  </span>
-                </div>
-                <Progress
-                  value={limits.maxNotes === -1 ? 0 : Math.min((usage.notesCount / limits.maxNotes) * 100, 100)}
-                  className="h-1"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Entities</span>
-                  <span className="text-muted-foreground">
-                    {usage.entitiesCount} / {limits.maxEntities === -1 ? "∞" : limits.maxEntities}
-                  </span>
-                </div>
-                <Progress
-                  value={limits.maxEntities === -1 ? 0 : Math.min((usage.entitiesCount / limits.maxEntities) * 100, 100)}
-                  className="h-1"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Habits</span>
-                  <span className="text-muted-foreground">
-                    {usage.habitsCount} / {limits.maxHabits === -1 ? "∞" : limits.maxHabits}
-                  </span>
-                </div>
-                <Progress
-                  value={limits.maxHabits === -1 ? 0 : Math.min((usage.habitsCount / limits.maxHabits) * 100, 100)}
-                  className="h-1"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Storage</span>
-                  <span className="text-muted-foreground">
-                    {usage.vaultSizeMB}MB / {limits.maxVaultSizeMB}MB
-                  </span>
-                </div>
-                <Progress
-                  value={Math.min((usage.vaultSizeMB / limits.maxVaultSizeMB) * 100, 100)}
-                  className="h-1"
-                />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </AppLayout>
   );
