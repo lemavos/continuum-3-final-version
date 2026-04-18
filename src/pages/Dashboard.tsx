@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { Plan, DashboardSummaryDTO, Entity } from "@/types";
 import { PLAN_LIMITS } from "@/types";
+import { ForceGraph2D } from "react-force-graph-2d";
 
 // ==========================================
 // SKELETON
@@ -92,6 +93,35 @@ export default function Dashboard() {
 
   const pendingHabits = getPendingHabits();
 
+  // Process graph data for ForceGraph2D
+  const getGraphPreviewData = () => {
+    if (!graphData?.nodes || !graphData?.links) return null;
+    
+    // Limit to first 50 nodes for preview performance
+    const limitedNodes = graphData.nodes.slice(0, 50);
+    const nodeIds = new Set(limitedNodes.map(n => n.id));
+    
+    // Filter links to only include those between limited nodes
+    const limitedLinks = (graphData.links || graphData.edges || []).filter(
+      (link: any) => nodeIds.has(link.source) && nodeIds.has(link.target)
+    );
+
+    return {
+      nodes: limitedNodes.map((node: any) => ({
+        id: node.id,
+        name: node.label || node.id,
+        type: node.type,
+        val: 1 // Size for ForceGraph2D
+      })),
+      links: limitedLinks.map((link: any) => ({
+        source: link.source,
+        target: link.target
+      }))
+    };
+  };
+
+  const graphPreviewData = getGraphPreviewData();
+
   if (loading) return <DashboardSkeleton />;
 
   return (
@@ -101,16 +131,16 @@ export default function Dashboard() {
         {/* HEADER */}
         <header className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-3xl font-semibold text-white tracking-tight">
+            <h1 className="text-3xl font-display font-semibold text-white tracking-tight">
               Dashboard
             </h1>
-            <p className="text-sm text-zinc-500">Visão geral do seu cofre.</p>
+            <p className="text-sm font-sans text-zinc-500">Overview of your vault.</p>
           </div>
           <button 
             onClick={() => navigate("/notes")}
-            className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-zinc-200 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-sans font-semibold rounded-lg hover:bg-zinc-200 transition-colors"
           >
-            <Plus className="w-4 h-4" /> Nova Nota
+            <Plus className="w-4 h-4" /> New Note
           </button>
         </header>
 
@@ -120,18 +150,51 @@ export default function Dashboard() {
           {/* 1. PREVIEW DO GRAFO */}
           <div className="col-span-12 lg:col-span-8 bg-[#09090b] border border-white/5 rounded-2xl p-6 flex flex-col relative overflow-hidden">
             <div className="flex justify-between items-center mb-4 z-10">
-              <h2 className="text-white font-medium flex items-center gap-2">
+              <h2 className="text-white font-sans font-medium flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-zinc-400" /> Knowledge Graph
               </h2>
-              <span className="text-xs text-zinc-500">{graphData?.nodes?.length || summary?.stats?.totalNotes || 0} nós ativos</span>
+              <span className="text-xs text-zinc-500">{graphData?.nodes?.length || summary?.stats?.totalNotes || 0} active nodes</span>
             </div>
             
-            {/* Placeholder para o grafo - pode ser substituído por ForceGraph2D */}
-            <div className="flex-1 min-h-[280px] bg-zinc-950/50 rounded-xl border border-white/5 flex items-center justify-center cursor-pointer hover:bg-zinc-950/70 transition-colors" onClick={() => navigate("/graph")}>
-               <div className="text-center">
-                 <Share2 className="w-8 h-8 text-zinc-700 mx-auto mb-2 opacity-50" />
-                 <p className="text-sm text-zinc-500">Clique para explorar o grafo de conhecimento</p>
-               </div>
+            {/* ForceGraph2D Preview */}
+            <div className="flex-1 min-h-[280px] bg-zinc-950/50 rounded-xl border border-white/5 overflow-hidden cursor-pointer" onClick={() => navigate("/graph")}>
+              {graphPreviewData && graphPreviewData.nodes.length > 0 ? (
+                <ForceGraph2D
+                  graphData={graphPreviewData}
+                  width={undefined}
+                  height={280}
+                  backgroundColor="transparent"
+                  nodeColor={(node: any) => {
+                    const colors: Record<string, string> = {
+                      NOTE: "#ffffff",
+                      HABIT: "#22c55e",
+                      PERSON: "#eab308",
+                      PROJECT: "#3b82f6",
+                      TOPIC: "#a855f7",
+                      ORGANIZATION: "#f97316"
+                    };
+                    return colors[node.type] || "#64748b";
+                  }}
+                  nodeRelSize={4}
+                  nodeVal={(node: any) => 1}
+                  linkColor={() => "rgba(255,255,255,0.1)"}
+                  linkWidth={1}
+                  enableNodeDrag={false}
+                  enableZoomPanInteraction={false}
+                  cooldownTicks={100}
+                  d3AlphaDecay={0.02}
+                  d3VelocityDecay={0.3}
+                  onNodeClick={() => navigate("/graph")}
+                  onLinkClick={() => navigate("/graph")}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <Share2 className="w-8 h-8 text-zinc-700 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm text-zinc-500">Clique para explorar o grafo de conhecimento</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -139,7 +202,7 @@ export default function Dashboard() {
           <div className="col-span-12 lg:col-span-4 bg-[#09090b] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-white font-medium flex items-center gap-2">
+                <h2 className="text-white font-sans font-medium flex items-center gap-2">
                   <Activity className="w-4 h-4 text-zinc-400" /> System Usage
                 </h2>
                 <span className="text-[10px] font-bold px-2 py-1 rounded bg-purple-500/10 text-purple-400 tracking-widest uppercase">
@@ -151,28 +214,28 @@ export default function Dashboard() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-zinc-400">
-                      <span>Notas</span>
+                      <span>Notes</span>
                       <span className="text-zinc-200">{usage.notesCount} / {limits.maxNotes === -1 ? "∞" : limits.maxNotes}</span>
                     </div>
                     <Progress value={limits.maxNotes === -1 ? 0 : Math.min((usage.notesCount / limits.maxNotes) * 100, 100)} className="h-1.5 bg-zinc-800" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-zinc-400">
-                      <span>Entidades</span>
+                      <span>Entities</span>
                       <span className="text-zinc-200">{usage.entitiesCount} / {limits.maxEntities === -1 ? "∞" : limits.maxEntities}</span>
                     </div>
                     <Progress value={limits.maxEntities === -1 ? 0 : Math.min((usage.entitiesCount / limits.maxEntities) * 100, 100)} className="h-1.5 bg-zinc-800" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-zinc-400">
-                      <span>Hábitos</span>
+                      <span>Habits</span>
                       <span className="text-zinc-200">{usage.habitsCount} / {limits.maxHabits === -1 ? "∞" : limits.maxHabits}</span>
                     </div>
                     <Progress value={limits.maxHabits === -1 ? 0 : Math.min((usage.habitsCount / limits.maxHabits) * 100, 100)} className="h-1.5 bg-zinc-800" />
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-zinc-500">Carregando limites...</div>
+                <div className="text-sm text-zinc-500">Loading limits...</div>
               )}
             </div>
 
@@ -198,11 +261,11 @@ export default function Dashboard() {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-2">
                 <Flame className="w-4 h-4 text-orange-500" />
-                <h2 className="text-white font-medium">Para Hoje</h2>
+                <h2 className="text-white font-sans font-medium">For Today</h2>
               </div>
               {pendingHabits.length > 0 && (
                 <span className="text-[10px] font-bold px-2 py-1 bg-orange-500/10 text-orange-500 rounded uppercase tracking-widest">
-                  {pendingHabits.length} Pendentes
+                  {pendingHabits.length} Pending
                 </span>
               )}
             </div>
@@ -227,8 +290,8 @@ export default function Dashboard() {
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center py-6">
                   <CheckCircle2 className="w-8 h-8 text-emerald-500 mb-3 opacity-80" />
-                  <p className="text-sm text-zinc-300 font-medium">Tudo limpo por hoje!</p>
-                  <p className="text-xs text-zinc-500 mt-1">Nenhum hábito pendente.</p>
+                  <p className="text-sm text-zinc-300 font-sans font-medium">All clear for today!</p>
+                  <p className="text-xs text-zinc-500 mt-1">No pending habits.</p>
                 </div>
               )}
             </div>
@@ -237,11 +300,11 @@ export default function Dashboard() {
           {/* 4. NOTAS RECENTES */}
           <div className="col-span-12 lg:col-span-5 bg-[#09090b] border border-white/5 rounded-2xl p-6 flex flex-col">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-white font-medium flex items-center gap-2">
-                <FolderOpen className="w-4 h-4 text-zinc-400" /> Notas Recentes
+              <h2 className="text-white font-sans font-medium flex items-center gap-2">
+                <FolderOpen className="w-4 h-4 text-zinc-400" /> Recent Notes
               </h2>
               <button onClick={() => navigate("/notes")} className="text-[10px] uppercase font-bold text-zinc-500 hover:text-white transition-colors">
-                Ver Todas
+                View All
               </button>
             </div>
 
@@ -269,7 +332,7 @@ export default function Dashboard() {
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center py-6">
                   <FileText className="w-6 h-6 text-zinc-800 mb-2" />
-                  <p className="text-xs text-zinc-500">Nenhuma nota recente.</p>
+                  <p className="text-xs text-zinc-500">No recent notes.</p>
                 </div>
               )}
             </div>
