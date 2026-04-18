@@ -95,7 +95,7 @@ export default function Notes() {
             <h1 className="font-display text-3xl font-semibold tracking-tight text-slate-50">Notes</h1>
             {limitMsg && <p className="text-xs text-slate-400 mt-1">{limitMsg}</p>}
           </div>
-          <Button onClick={handleCreateNote} size="sm" className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20" disabled={!canCreateNote && canCreateNote !== undefined}>
+          <Button onClick={handleCreateNote} size="sm" className="bg-white text-black hover:bg-gray-100 shadow-lg" disabled={!canCreateNote && canCreateNote !== undefined}>
             <Plus className="w-4 h-4 mr-1" /> New Note
           </Button>
         </div>

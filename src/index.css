@@ -15,7 +15,7 @@
     --popover: 0 0% 6%;
     --popover-foreground: 0 0% 96%;
 
-    --primary: 174 100% 41%;
+    --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 0 0% 10%;
@@ -32,7 +32,7 @@
 
     --border: 0 0% 12%;
     --input: 0 0% 12%;
-    --ring: 174 100% 41%;
+    --ring: 0 0% 100%;
 
     --radius: 0.5rem;
 
@@ -65,7 +65,7 @@
     --card-foreground: 0 0% 96%;
     --popover: 0 0% 6%;
     --popover-foreground: 0 0% 96%;
-    --primary: 174 100% 41%;
+    --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 85%;
@@ -77,25 +77,25 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 12%;
     --input: 0 0% 12%;
-    --ring: 174 100% 41%;
+    --ring: 0 0% 100%;
     --sidebar-background: 0 0% 3%;
     --sidebar-foreground: 0 0% 60%;
-    --sidebar-primary: 174 100% 41%;
+    --sidebar-primary: 0 0% 100%;
     --sidebar-primary-foreground: 0 0% 0%;
     --sidebar-accent: 0 0% 8%;
     --sidebar-accent-foreground: 0 0% 96%;
     --sidebar-border: 0 0% 10%;
-    --sidebar-ring: 174 100% 41%;
-    --success: 174 100% 41%;
+    --sidebar-ring: 0 0% 100%;
+    --success: 0 0% 100%;
     --success-foreground: 0 0% 0%;
     --warning: 45 100% 60%;
     --warning-foreground: 0 0% 0%;
-    --info: 174 100% 41%;
+    --info: 0 0% 100%;
     --info-foreground: 0 0% 0%;
     --bento-dot: 0 0% 100% / 0.02;
     --bento-border: 0 0% 100% / 0.06;
-    --bento-hover-shadow: 174 100% 41% / 0.08;
-    --bento-gradient-via: 174 100% 41% / 0.03;
+    --bento-hover-shadow: 0 0% 100% / 0.08;
+    --bento-gradient-via: 0 0% 100% / 0.03;
   }
 }
 

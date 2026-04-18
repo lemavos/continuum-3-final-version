@@ -222,7 +222,7 @@ export default function EntityDetail() {
   return (
     <AppLayout>
       <div className="relative">
-        <div className="absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-cyan-900/10 via-transparent to-transparent pointer-events-none"></div>
+        <div className="absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-gray-900/10 via-transparent to-transparent pointer-events-none"></div>
         <div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 relative z-10">
         <Button variant="ghost" size="sm" onClick={() => navigate("/entities")} className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
@@ -245,7 +245,7 @@ export default function EntityDetail() {
           )}
           <div className="flex gap-2">
             <span className="bento-tag">{entity.type}</span>
-            {isHabit && <span className="bento-tag flex items-center gap-1 text-cyan-400"><Flame className="w-3 h-3" /> Streak: {streak} days</span>}
+            {isHabit && <span className="bento-tag flex items-center gap-1 text-gray-400"><Flame className="w-3 h-3" /> Streak: {streak} days</span>}
             {isHabit && <span className="bento-tag">Max: {longestStreak}</span>}
             {isHabit && <span className="bento-tag">Total: {totalCompletions}</span>}
           </div>
@@ -273,13 +273,13 @@ export default function EntityDetail() {
 
         {isHabit && (
           <>
-            <Button onClick={handleTrack} disabled={!!trackedToday} className={trackedToday ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30" : "bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20"}>
+            <Button onClick={handleTrack} disabled={!!trackedToday} className={trackedToday ? "bg-gray-500/10 text-gray-300 border border-gray-500/30" : "bg-white text-black hover:bg-gray-100 shadow-lg"}>
               <CheckCircle className="w-4 h-4 mr-1" /> {trackedToday ? "Done today ✓" : "Track today"}
             </Button>
 
             <div className="space-y-4">
               <h2 className="text-sm font-semibold text-slate-50 tracking-tight">Last 90 days activity</h2>
-              <div className="flex flex-wrap gap-1.5 bg-card/80 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/10">
+              <div className="flex flex-wrap gap-1.5 bg-card/80 backdrop-blur-sm rounded-lg p-4 border border-white/10">
                 {days.map((day) => (
                   <div 
                     key={day} 
@@ -336,9 +336,9 @@ export default function EntityDetail() {
                 <button
                   key={note.id}
                   onClick={() => navigate(`/notes/${note.id}`)}
-                  className="flex w-full items-start gap-2 rounded-md border border-border/40 px-3 py-2 text-left transition-colors hover:bg-accent hover:border-cyan-500/30"
+                  className="flex w-full items-start gap-2 rounded-md border border-border/40 px-3 py-2 text-left transition-colors hover:bg-accent hover:border-white/20"
                 >
-                  <StickyNote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
+                  <StickyNote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm text-foreground">{note.title}</p>
                     <p className="text-xs text-muted-foreground">

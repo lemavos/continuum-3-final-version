@@ -118,7 +118,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <Button onClick={handleSave} disabled={saving || !username.trim()} className="bg-cyan-500 text-slate-900 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20">
+            <Button onClick={handleSave} disabled={saving || !username.trim()} className="bg-white text-black hover:bg-gray-100 shadow-lg">
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               Save Changes
             </Button>
@@ -137,20 +137,20 @@ export default function Profile() {
                   <p className="text-xs text-muted-foreground">Toggle between light and dark visual.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sun className="w-4 h-4 text-cyan-400" />
+                  <Sun className="w-4 h-4 text-gray-400" />
                   <Switch
                     checked={mounted ? theme !== "light" : true}
                     onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
                     disabled={!mounted}
                   />
-                  <Moon className="w-4 h-4 text-cyan-400" />
+                  <Moon className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             <div className="rounded-lg border border-border bg-accent/50 p-4 space-y-2">
               <div className="flex items-center gap-2 text-foreground">
-                <BadgeCheck className="w-4 h-4 text-cyan-400" />
+                <BadgeCheck className="w-4 h-4 text-gray-400" />
                 <span className="text-sm font-medium">Account Status</span>
               </div>
               <p className="text-sm text-muted-foreground">

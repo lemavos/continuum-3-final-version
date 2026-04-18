@@ -45,10 +45,10 @@ export default function Dashboard() {
   };
 
   const getHeatmapColor = (count: number) => {
-    if (count === 0) return "bg-slate-800";
-    if (count <= 2) return "bg-cyan-900";
-    if (count <= 4) return "bg-cyan-700";
-    return "bg-cyan-500";
+    if (count === 0) return "bg-gray-800";
+    if (count <= 2) return "bg-gray-700";
+    if (count <= 4) return "bg-gray-600";
+    return "bg-gray-500";
   };
 
   const generateHeatmap = () => {
@@ -84,7 +84,7 @@ export default function Dashboard() {
       title: `Welcome back, ${user?.username || "User"}`,
       meta: summary?.storageUsage ? `${summary.storageUsage.formattedUsed} of ${summary.storageUsage.formattedLimit}` : "Loading...",
       description: "Your storage usage and quick overview",
-      icon: <HardDrive className="w-4 h-4 text-cyan-400" />,
+      icon: <HardDrive className="w-4 h-4 text-gray-400" />,
       status: summary?.storageUsage
         ? summary.storageUsage.isUnlimited
           ? "Unlimited storage"
@@ -130,7 +130,7 @@ export default function Dashboard() {
       title: "Recent Notes",
       meta: summary?.recentNotes ? `${summary.recentNotes.length} recent` : "—",
       description: "Quick access to your latest notes",
-      icon: <FileText className="w-4 h-4 text-cyan-400" />,
+      icon: <FileText className="w-4 h-4 text-gray-400" />,
       status: "Recently updated",
       tags: ["Notes", "Recent"],
       colSpan: 2,
@@ -139,7 +139,7 @@ export default function Dashboard() {
           {summary.recentNotes.slice(0, 3).map((note) => (
             <div
               key={note.id}
-              className="flex items-center justify-between p-2 rounded-md bg-slate-800/50 hover:bg-slate-800 cursor-pointer transition-colors"
+              className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer transition-colors"
               onClick={() => navigate(`/notes/${note.id}`)}
             >
               <div className="flex-1 min-w-0">
@@ -154,7 +154,7 @@ export default function Dashboard() {
           {summary.recentNotes.length > 3 && (
             <button
               onClick={() => navigate("/notes")}
-              className="w-full text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+              className="w-full text-xs text-gray-400 hover:text-gray-300 transition-colors"
             >
               View all notes →
             </button>
@@ -167,7 +167,7 @@ export default function Dashboard() {
           <p className="text-xs">Create your first note to get started</p>
           <button
             onClick={() => navigate("/notes")}
-            className="mt-2 inline-flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-300 transition-colors"
           >
             <Plus className="w-3 h-3" />
             Create note
@@ -182,7 +182,7 @@ export default function Dashboard() {
       title: "Quick Stats",
       meta: summary?.stats ? `${summary.stats.totalNotes} notes` : "—",
       description: "Overview of your content and activity",
-      icon: <BarChart3 className="w-4 h-4 text-cyan-400" />,
+      icon: <BarChart3 className="w-4 h-4 text-gray-400" />,
       status: "Your activity",
       tags: ["Stats", "Overview"],
       colSpan: 1,
@@ -222,9 +222,9 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="bento-card p-5 animate-pulse">
-                <div className="h-4 bg-slate-700 rounded mb-2"></div>
-                <div className="h-3 bg-slate-700 rounded mb-4"></div>
-                <div className="h-20 bg-slate-700 rounded"></div>
+                <div className="h-4 bg-card rounded mb-2"></div>
+                <div className="h-3 bg-card rounded mb-4"></div>
+                <div className="h-20 bg-card rounded"></div>
               </div>
             ))}
           </div>
@@ -252,7 +252,7 @@ export default function Dashboard() {
           <div className="bento-card p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-medium text-foreground">
-                Plan <span className="text-cyan-400">{plan}</span>
+                Plan <span className="text-gray-400">{plan}</span>
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

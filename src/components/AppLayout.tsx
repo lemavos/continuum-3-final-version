@@ -135,11 +135,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 border-l-2",
                 isActive
-                  ? "bg-cyan-500/5 text-slate-50 font-medium border-l-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.1)]"
-                  : "text-slate-400 hover:text-slate-50 hover:bg-white/[0.02] border-l-transparent"
+                  ? "bg-white/5 text-white font-medium border-l-white/20 shadow-none"
+                  : "text-gray-400 hover:text-white hover:bg-white/[0.02] border-l-transparent"
               )}
             >
-              <item.icon className={cn("w-[18px] h-[18px]", isActive ? "text-cyan-400 opacity-100" : "opacity-70 text-slate-400")} />
+              <item.icon className={cn("w-[18px] h-[18px]", isActive ? "text-gray-200 opacity-100" : "opacity-70 text-gray-500")} />
               {item.label}
             </Link>
           );
@@ -148,12 +148,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       <div className="p-4 border-t border-border/50 space-y-1">
         <div className="flex items-center gap-3 px-3 py-2 text-sm">
-          <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="w-3.5 h-3.5 text-primary" />
+          <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+            <User className="w-3.5 h-3.5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="truncate text-sm font-medium text-foreground">{user?.username}</p>
-            <p className="truncate text-[11px] text-primary">{user?.plan || "FREE"}</p>
+            <p className="truncate text-[11px] text-gray-500">{user?.plan || "FREE"}</p>
           </div>
         </div>
         <button

@@ -79,7 +79,7 @@ export default function Vault() {
         <div className="bento-card p-4 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-cyan-400" />
+              <HardDrive className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-foreground font-medium">Storage</span>
             </div>
             <span className="text-xs text-muted-foreground">
@@ -104,9 +104,9 @@ export default function Vault() {
             {files.map((file) => {
               const Icon = getFileIcon(file.contentType);
               return (
-                <div key={file.id} className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border/50 hover:bg-accent/50 hover:border-cyan-500/30 transition-colors">
+                <div key={file.id} className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border/50 hover:bg-accent/50 hover:border-white/20 transition-colors">
                   <div className="bento-icon-box shrink-0">
-                    <Icon className="w-4 h-4 text-cyan-400" />
+                    <Icon className="w-4 h-4 text-gray-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground truncate">{file.fileName}</p>
