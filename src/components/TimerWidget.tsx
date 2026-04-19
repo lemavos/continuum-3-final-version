@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Play, Pause, Trash2 } from 'lucide-react';
 import { useTimeTracking } from '@/hooks/useTimeTracking';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ interface TimerWidgetProps {
 }
 
 /**
- * Reusable timer widget component
+ * Reusable timer widget component - uses shared timer state
  */
 export function TimerWidget({
   entityId,
@@ -21,29 +21,13 @@ export function TimerWidget({
   onTimerStop,
   compact = false,
 }: TimerWidgetProps) {
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const { activeTimerId, startTimer, stopTimer, isStarting, isStopping, getActiveTimer, formatSeconds } = useTimeTracking();
+  const { activeTimerId, elapsedSeconds, startTimer, stopTimer, isStarting, isStopping, getActiveTimer, formatSeconds } = useTimeTracking();
   
   const { data: activeTimer, isLoading: timerLoading } = getActiveTimer(entityId);
   const isRunning = activeTimerId === entityId;
 
-  // Update elapsed time every second
-  useEffect(() => {
-    if (!isRunning) return;
-
-    const interval = setInterval(() => {
-      setElapsedSeconds(prev => prev + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isRunning]);
-
-  // Initialize elapsed time from active timer
-  useEffect(() => {
-    if (activeTimer) {
-      setElapsedSeconds(activeTimer.elapsedSeconds || 0);
-    }
-  }, [activeTimer]);
+  // Get the current timer value from the hook's shared state
+  const currentElapsed = isRunning ? elapsedSeconds : (activeTimer?.elapsedSeconds || 0);
 
   const handleStart = async () => {
     try {
@@ -56,11 +40,10 @@ export function TimerWidget({
 
   const handleStop = async () => {
     try {
-      if (activeTimer?.id) {
-        await stopTimer({ sessionId: activeTimer.id });
-        onTimerStop?.(elapsedSeconds);
+      if (activeTimerId) {
+        await stopTimer({ sessionId: activeTimerId });
+        onTimerStop?.(currentElapsed);
       }
-      setElapsedSeconds(0);
     } catch (error) {
       console.error('Failed to stop timer:', error);
     }
@@ -70,7 +53,7 @@ export function TimerWidget({
     return (
       <div className="flex items-center gap-2">
         <span className="font-mono text-sm text-zinc-400">
-          {formatSeconds(elapsedSeconds)}
+          {formatSeconds(currentElapsed)}
         </span>
         {isRunning ? (
           <Button
@@ -104,7 +87,7 @@ export function TimerWidget({
       <h3 className="text-lg font-medium text-white">{entityName}</h3>
       
       <div className="text-4xl font-mono font-bold text-cyan-400">
-        {formatSeconds(elapsedSeconds)}
+        {formatSeconds(currentElapsed)}
       </div>
 
       <div className="flex gap-2">

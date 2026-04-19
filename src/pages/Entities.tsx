@@ -51,7 +51,7 @@ export default function Entities() {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   // Time tracking
-  const { getAllSummaries, startTimer, stopTimer, formatSeconds, activeEntityId, isStarting, isStopping } = useTimeTracking();
+  const { getAllSummaries, startTimer, stopTimer, formatSeconds, activeEntityId, activeTimerId, isStarting, isStopping } = useTimeTracking();
   const { data: timeSummaries } = getAllSummaries();
 
   const getTimeSummaryForEntity = (entityId: string) => {
@@ -59,12 +59,16 @@ export default function Entities() {
   };
 
   const handleStartTimer = (entityId: string) => {
+    console.log('Starting timer for entity:', entityId);
     startTimer(entityId);
   };
 
   const handleStopTimer = (entityId: string) => {
+    console.log('Stopping timer for entity:', entityId, 'activeTimerId:', activeTimerId);
     if (activeTimerId) {
       stopTimer({ sessionId: activeTimerId });
+    } else {
+      console.error('No active timer to stop');
     }
   };
 
