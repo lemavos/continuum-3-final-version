@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/api';
+import { timeTrackingApi } from '@/lib/api';
 
 export interface TimeEntry {
   id: string;
@@ -49,7 +49,7 @@ export const useTimeTracking = () => {
   const getTotalTime = (entityId: string) => {
     return useQuery({
       queryKey: ['timeTracking', 'total', entityId],
-      queryFn: () => api.get(`/api/time-tracking/${entityId}/total`).then(r => r.data),
+      queryFn: () => timeTrackingApi.getTotalTime(entityId).then(r => r.data),
       refetchInterval: activeTimerId === entityId ? 1000 : false,
     });
   };
@@ -58,7 +58,7 @@ export const useTimeTracking = () => {
   const getDailyBreakdown = (entityId: string) => {
     return useQuery({
       queryKey: ['timeTracking', 'daily', entityId],
-      queryFn: () => api.get(`/api/time-tracking/${entityId}/daily`).then(r => r.data),
+      queryFn: () => timeTrackingApi.getDailyBreakdown(entityId).then(r => r.data),
     });
   };
 
@@ -66,7 +66,7 @@ export const useTimeTracking = () => {
   const getAllSummaries = () => {
     return useQuery({
       queryKey: ['timeTracking', 'summaries'],
-      queryFn: () => api.get('/api/time-tracking/summary/all').then(r => r.data),
+      queryFn: () => timeTrackingApi.getAllSummaries().then(r => r.data),
       refetchInterval: 5000, // Update every 5 seconds for active timers
     });
   };
@@ -75,7 +75,7 @@ export const useTimeTracking = () => {
   const getActiveTimer = (entityId: string) => {
     return useQuery({
       queryKey: ['timeTracking', 'activeTimer', entityId],
-      queryFn: () => api.get(`/api/time-tracking/${entityId}/active`).then(r => r.data),
+      queryFn: () => timeTrackingApi.getActiveTimer(entityId).then(r => r.data),
       refetchInterval: activeTimerId === entityId ? 1000 : 5000,
     });
   };
@@ -83,7 +83,7 @@ export const useTimeTracking = () => {
   // Mutation: Start timer
   const startTimerMutation = useMutation({
     mutationFn: (entityId: string) =>
-      api.post('/api/time-tracking/start', { entityId }).then(r => r.data),
+      timeTrackingApi.startTimer(entityId).then(r => r.data),
     onSuccess: (data: TimerSession) => {
       setActiveTimerId(data.id);
       queryClient.invalidateQueries({ queryKey: ['timeTracking'] });
@@ -97,7 +97,7 @@ export const useTimeTracking = () => {
   // Mutation: Stop timer
   const stopTimerMutation = useMutation({
     mutationFn: (data: { sessionId: string; note?: string }) =>
-      api.post('/api/time-tracking/stop', data).then(r => r.data),
+      timeTrackingApi.stopTimer(data.sessionId, data.note).then(r => r.data),
     onSuccess: () => {
       setActiveTimerId(null);
       localStorage.removeItem('activeTimerId');
@@ -108,7 +108,7 @@ export const useTimeTracking = () => {
   // Mutation: Add time manually
   const addTimeMutation = useMutation({
     mutationFn: (data: { entityId: string; date: string; durationSeconds: number; note?: string }) =>
-      api.post('/api/time-tracking/add', data).then(r => r.data),
+      timeTrackingApi.addTime(data.entityId, data.date, data.durationSeconds, data.note).then(r => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timeTracking'] });
     },
@@ -117,7 +117,7 @@ export const useTimeTracking = () => {
   // Mutation: Delete entry
   const deleteEntryMutation = useMutation({
     mutationFn: (entryId: string) =>
-      api.delete(`/api/time-tracking/${entryId}`),
+      timeTrackingApi.deleteEntry(entryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timeTracking'] });
     },

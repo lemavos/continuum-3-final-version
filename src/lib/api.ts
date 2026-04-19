@@ -277,4 +277,30 @@ export const vaultApi = {
   entityIndex: () => api.get("/api/vault/entity-index"),
 };
 
+// Time Tracking
+export const timeTrackingApi = {
+  // Timer operations
+  startTimer: (entityId: string) => api.post("/api/time-tracking/start", { entityId }),
+  stopTimer: (sessionId: string, note?: string) => api.post("/api/time-tracking/stop", { sessionId, note }),
+  
+  // Manual time entry
+  addTime: (entityId: string, date: string, durationSeconds: number, note?: string) => 
+    api.post("/api/time-tracking/add", { entityId, date, durationSeconds, note }),
+  
+  // Get data
+  getTotalTime: (entityId: string) => api.get(`/api/time-tracking/${entityId}/total`),
+  getDailyBreakdown: (entityId: string) => api.get(`/api/time-tracking/${entityId}/daily`),
+  getTimeInRange: (entityId: string, from: string, to: string) => 
+    api.get(`/api/time-tracking/${entityId}/range`, { params: { from, to } }),
+  getAllSummaries: () => api.get("/api/time-tracking/summary/all"),
+  getActiveTimer: (entityId: string) => api.get(`/api/time-tracking/${entityId}/active`),
+  getAllActiveTimers: () => api.get("/api/time-tracking/active/all"),
+  
+  // Delete entry
+  deleteEntry: (entryId: string) => api.delete(`/api/time-tracking/${entryId}`),
+  
+  // Recover session
+  recoverSession: (entityId: string) => api.post(`/api/time-tracking/${entityId}/recover`),
+};
+
 export default api;
